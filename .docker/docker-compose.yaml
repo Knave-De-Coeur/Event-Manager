@@ -1,0 +1,63 @@
+version: "3"
+
+services:
+  nginx:
+    container_name: em-server
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - internal
+    volumes:
+      - ./public:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/sites-available/default.conf
+      - ./nginx/default.conf:/etc/nginx/sites-enabled/default.conf
+      - ./nginx/logs/error.log:/var/log/nginx/error.log
+      - ./nginx/logs/access.log:/var/log/nginx/access.log
+
+
+  php:
+    container_name: php-fpm
+    image: php:fpm-alpine
+    networks:
+      - internal
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./public:/var/www/html
+      - ./public/logs/php.log:/var/log/fpm-php.www.log
+
+  mysql:
+    container_name: em-db
+    image: mysql:8.0.26
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - app-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: events
+      MYSQL_USER: alex
+      MYSQL_PASSWORD: alexsecret
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      internalk:
+
+  redis:
+    container_name: em-redis
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  app-data:
