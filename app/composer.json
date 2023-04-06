@@ -1,0 +1,16 @@
+{
+  "name": "knave-de-coeur/event-manager",
+  "description": "REST API for a events manager",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "alexandermifsud",
+      "email": "alexanderm1496@gmail.com"
+    }
+  ],
+  "require": {
+    "ext-redis": "*",
+    "ext-pdo": "*"
+  }
+}

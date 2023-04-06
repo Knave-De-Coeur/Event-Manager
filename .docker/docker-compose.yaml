@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   nginx:
@@ -11,23 +11,28 @@ services:
     networks:
       - internal
     volumes:
-      - ./public:/var/www/html
-      - ./nginx/default.conf:/etc/nginx/sites-available/default.conf
-      - ./nginx/default.conf:/etc/nginx/sites-enabled/default.conf
+      - ../app:/var/www/html
+      - ./nginx/conf.d/default.conf:/etc/nginx/sites-available/default.conf
+      - ./nginx/conf.d/default.conf:/etc/nginx/sites-enabled/default.conf
       - ./nginx/logs/error.log:/var/log/nginx/error.log
       - ./nginx/logs/access.log:/var/log/nginx/access.log
 
 
   php:
     container_name: php-fpm
-    image: php:fpm-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
     networks:
       - internal
     ports:
       - "9000:9000"
     volumes:
-      - ./public:/var/www/html
-      - ./public/logs/php.log:/var/log/fpm-php.www.log
+      - ../app:/var/www/html
+      - ./php/logs/php.log:/var/log/fpm-php.www.log
+      - ../app/composer.json:/var/www/html/composer.json
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   mysql:
     container_name: em-db
@@ -38,7 +43,7 @@ services:
     expose:
       - '3306'
     volumes:
-      - app-data:/var/lib/mysql
+      - events-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: events
@@ -46,13 +51,19 @@ services:
       MYSQL_PASSWORD: alexsecret
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     networks:
-      internalk:
+      internal:
 
   redis:
     container_name: em-redis
     image: "redis:alpine"
     ports:
       - "6379:6379"
+    command: >
+      --requirepass alex
+    volumes:
+    - events-data:/data
+    networks:
+    - internal
 
 
 networks:
@@ -60,4 +71,4 @@ networks:
     driver: bridge
 
 volumes:
-  app-data:
+  events-data:
