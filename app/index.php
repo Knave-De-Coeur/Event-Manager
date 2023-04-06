@@ -1,9 +1,20 @@
 <?php
+namespace app;
 
-require_once __DIR__."/setup.php";
+include 'src/utils/database.php';
+include 'src/utils/cache.php';
+require 'vendor/autoload.php';
 
-if ($redis->isConnected()) {
-    echo "We connected to redis!";
-}
+use Dotenv\Dotenv;
+use src\utils\database as db;
+use src\utils\cache as cache;
 
-phpinfo();
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+echo $_ENV['DB_HOST'] . "\n";
+
+$dbConnection = (new db\database())->getConnection();
+
+$cacheConn = (new cache\cache())->getConnection();
+echo $cacheConn . "\n";

@@ -10,7 +10,13 @@
     }
   ],
   "require": {
-    "ext-redis": "*",
+    "vlucas/phpdotenv": "v5.5.0",
+    "predis/predis": "v2.1.2",
     "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Src\\": "src/"
+    }
   }
 }

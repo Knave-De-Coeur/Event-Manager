@@ -4,33 +4,33 @@ services:
   nginx:
     container_name: em-server
     build:
-      context: .
-      dockerfile: nginx/Dockerfile
+      context: .docker
+      dockerfile: ./nginx/Dockerfile
     ports:
       - "8080:80"
     networks:
       - internal
     volumes:
-      - ../app:/var/www/html
-      - ./nginx/conf.d/default.conf:/etc/nginx/sites-available/default.conf
-      - ./nginx/conf.d/default.conf:/etc/nginx/sites-enabled/default.conf
-      - ./nginx/logs/error.log:/var/log/nginx/error.log
-      - ./nginx/logs/access.log:/var/log/nginx/access.log
+      - ./app:/var/www/html
+      - .docker/nginx/conf.d/default.conf:/etc/nginx/sites-available/default.conf
+      - .docker/nginx/conf.d/default.conf:/etc/nginx/sites-enabled/default.conf
+      - .docker/nginx/logs/error.log:/var/log/nginx/error.log
+      - .docker/nginx/logs/access.log:/var/log/nginx/access.log
 
 
   php:
     container_name: php-fpm
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: .docker
+      dockerfile: ./php/Dockerfile
     networks:
       - internal
     ports:
       - "9000:9000"
     volumes:
-      - ../app:/var/www/html
-      - ./php/logs/php.log:/var/log/fpm-php.www.log
-      - ../app/composer.json:/var/www/html/composer.json
+      - ./app:/var/www/html
+      - .docker/php/logs/php.log:/var/log/fpm-php.www.log
+      - ./app/composer.json:/var/www/html/composer.json
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -54,12 +54,10 @@ services:
       internal:
 
   redis:
-    container_name: em-redis
+    container_name: em-cache
     image: "redis:alpine"
     ports:
       - "6379:6379"
-    command: >
-      --requirepass alex
     volumes:
     - events-data:/data
     networks:
