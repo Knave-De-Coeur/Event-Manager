@@ -2,7 +2,7 @@
 
 namespace src\utils\classes;
 
-class event
+class Event
 {
 
 }

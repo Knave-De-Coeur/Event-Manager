@@ -5,7 +5,7 @@ namespace src\utils\database;
 use PDO;
 use PDOException;
 
-class database
+class Database extends PDO
 {
     private $dbConnection = null;
 
@@ -18,11 +18,8 @@ class database
         $pass = $_ENV['DB_PASSWORD'];
 
         try {
-            $this->dbConnection = new PDO(
-                "mysql:host=$host;port=$port;charset=utf8mb4;dbname=$db",
-                $user,
-                $pass
-            );
+            parent::__construct("mysql:host=$host;port=$port;charset=utf8mb4;dbname=$db", $user, $pass);
+
         } catch (PDOException $e) {
             exit("something went wrong getting connection: " . $e->getMessage());
         }
