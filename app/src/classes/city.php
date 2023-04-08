@@ -2,18 +2,19 @@
 
 namespace src\classes\city;
 
-include $_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/BaseClass.php';
 
-class City
+use src\classes\BaseClass\BaseClass;
+
+class City extends BaseClass
 {
-    private $db = null;
-
     public function __construct($db)
     {
-        $this->db = $db;
+        parent::__construct($db);
     }
 
-    public function findAll()
+    public function getAll()
     {
         try {
             $statement = $this->db->query(select_all_cities);
@@ -24,7 +25,7 @@ class City
         }
     }
 
-    public function find($id)
+    public function getById($id)
     {
         try {
             $statement = $this->db->prepare(select_city_by_id);

@@ -1,27 +1,28 @@
 <?php
-namespace src\controllers\CityController;
 
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/city.php';
+namespace src\controllers\CategoryController;
+
+require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/category.php';
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
 
-use src\classes\city\City;
 use src\controllers\BaseController\BaseController;
+use src\classes\category\Category;
 
-class CityController extends BaseController
+class CategoryController extends BaseController
 {
-
-    private $city;
+    private $catgeory;
 
     public function __construct($db, $requestMethod, $id)
     {
         parent::__construct($db, $requestMethod, $id);
 
-        $this->city = new City($db);
+        $this->catgeory = new Category($db);
     }
+
 
     public function getAll()
     {
-        $result = $this->city->getAll();
+        $result = $this->catgeory->getAll();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
@@ -29,39 +30,41 @@ class CityController extends BaseController
 
     public function getById()
     {
-        $result = $this->city->getById($this->id);
+        $result = $this->catgeory->getById($this->id);
         if (! $result) {
             return $this->notFoundResponse();
         }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
+
     }
 
     public function insert()
     {
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        if (! $this->validateCity($input)) {
+        if (! $this->validateCategory($input)) {
             return $this->badRequestResponse();
         }
-        $result = $this->city->insert($input);
+        $result = $this->catgeory->insert($input);
         $input['id'] = (int) $result;
         $response['status_code_header'] = 'HTTP/1.1 201 Created';
         $response['body'] = json_encode($input);
         return $response;
+
     }
 
     public function update()
     {
-        $result = $this->city->getById($this->id);
+        $result = $this->catgeory->getById($this->id);
         if (! $result) {
             return $this->notFoundResponse();
         }
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        if (! $this->validateCity($input)) {
+        if (! $this->validateCategory($input)) {
             return $this->badRequestResponse();
         }
-        $this->city->update($this->id, $input);
+        $this->catgeory->update($this->id, $input);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;
@@ -69,27 +72,23 @@ class CityController extends BaseController
 
     public function delete()
     {
-        $result = $this->city->getById($this->id);
+        $result = $this->catgeory->getById($this->id);
         if (! $result) {
             return $this->notFoundResponse();
         }
-        $this->city->delete($this->id);
+        $this->catgeory->delete($this->id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;
+
     }
 
-    private function validateCity($input)
+    private function validateCategory($input)
     {
         if (! isset($input['name'])) {
             return false;
         }
-        if (! isset($input['population'])) {
-            return false;
-        }
-        if (! isset($input['size'])) {
-            return false;
-        }
         return true;
     }
+
 }

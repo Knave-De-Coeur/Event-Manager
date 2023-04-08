@@ -3,10 +3,12 @@ namespace app;
 
 require_once __DIR__. '/src/utils/database.php';
 require_once __DIR__. '/src/controllers/CityController.php';
+require_once __DIR__. '/src/controllers/CategoryController.php';
 //include 'src/utils/cache.php';
 require 'vendor/autoload.php';
 //
 use Dotenv\Dotenv;
+use src\controllers\CategoryController\CategoryController;
 use src\controllers\CityController\CityController;
 use src\utils\database as db;
 //use src\utils\cache as cache;
@@ -39,11 +41,15 @@ if (isset($uri[2])) {
 }
 
 
+$controller = null;
+
 if ($uri[1] == "city" || $uri[1] == "cities") {
     $controller = new CityController($db, $requestMethod, $id);
-    $controller->processRequest();
-} else if ($uri[1] == "category") {
-    echo "TODO categories";
+} else if ($uri[1] == "category" || $uri[1] == "categories")   {
+    $controller = new CategoryController($db, $requestMethod, $id);
 } else {
     echo "TODO some message";
 }
+
+$controller->processRequest();
+
