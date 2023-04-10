@@ -1,10 +1,10 @@
 <?php
 
-namespace src\classes\category;
+namespace src\classes;
 
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/BaseClass.php';
 
-use src\classes\BaseClass\BaseClass;
+use src\classes\BaseClass as BaseClass;
 
 class Category extends BaseClass
 {

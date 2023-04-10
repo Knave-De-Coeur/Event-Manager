@@ -1,13 +1,15 @@
 <?php
 
-namespace src\controllers\BaseController;
+namespace src\controllers;
+
+use src\utils\Database as Database;
 
 abstract class BaseController
 {
-    protected $db;
-    private $requestMethod;
+    protected Database $db;
+    private string $requestMethod;
 
-    protected $id;
+    protected int|null $id;
 
     public function __construct($db, $requestMethod, $id)
     {

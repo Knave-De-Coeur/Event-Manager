@@ -1,28 +1,32 @@
 <?php
 
-namespace src\controllers\CategoryController;
+namespace src\controllers;
 
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/category.php';
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
 
-use src\controllers\BaseController\BaseController;
-use src\classes\category\Category;
+use src\controllers\BaseController as BaseController;
+use src\classes\Category as Category;
 
 class CategoryController extends BaseController
 {
-    private $catgeory;
+    private Category $category;
 
-    public function __construct($db, $requestMethod, $id)
+    public function __construct($db, $requestMethod, $id, $category)
     {
         parent::__construct($db, $requestMethod, $id);
 
-        $this->catgeory = new Category($db);
+        if ($category == null) {
+            $this->category = new Category($db);
+        } else {
+            $this->category = $category;
+        }
     }
 
 
     public function getAll()
     {
-        $result = $this->catgeory->getAll();
+        $result = $this->category->getAll();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
@@ -30,7 +34,7 @@ class CategoryController extends BaseController
 
     public function getById()
     {
-        $result = $this->catgeory->getById($this->id);
+        $result = $this->category->getById($this->id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -46,7 +50,7 @@ class CategoryController extends BaseController
         if (! $this->validateCategory($input)) {
             return $this->badRequestResponse();
         }
-        $result = $this->catgeory->insert($input);
+        $result = $this->category->insert($input);
         $input['id'] = (int) $result;
         $response['status_code_header'] = 'HTTP/1.1 201 Created';
         $response['body'] = json_encode($input);
@@ -56,7 +60,7 @@ class CategoryController extends BaseController
 
     public function update()
     {
-        $result = $this->catgeory->getById($this->id);
+        $result = $this->category->getById($this->id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -64,7 +68,7 @@ class CategoryController extends BaseController
         if (! $this->validateCategory($input)) {
             return $this->badRequestResponse();
         }
-        $this->catgeory->update($this->id, $input);
+        $this->category->update($this->id, $input);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;
@@ -72,11 +76,11 @@ class CategoryController extends BaseController
 
     public function delete()
     {
-        $result = $this->catgeory->getById($this->id);
+        $result = $this->category->getById($this->id);
         if (! $result) {
             return $this->notFoundResponse();
         }
-        $this->catgeory->delete($this->id);
+        $this->category->delete($this->id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;

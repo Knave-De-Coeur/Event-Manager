@@ -1,6 +1,6 @@
 <?php
 
-namespace src\utils\cache;
+namespace src\utils;
 
 use Predis;
 

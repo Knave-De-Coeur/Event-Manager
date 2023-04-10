@@ -1,6 +1,6 @@
 <?php
 
-namespace src\classes\BaseClass;
+namespace src\classes;
 
 abstract class BaseClass
 {
