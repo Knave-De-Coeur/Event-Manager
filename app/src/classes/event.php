@@ -104,9 +104,8 @@ class Event extends BaseClass
             // remove all pre-existing rows and insert anything coming from the request so long as it is valid
             if (count($input['category_ids']) >= 1) {
 
-                $statement = $this->db->prepare(delete_event_category);
-                $event_id = $id;
-                $statement->execute(array($event_id));
+                $statement = $this->db->prepare(delete_event_categories);
+                $statement->execute(array("event_id" => $id));
 
                 if (!$this->insertBulkEventCategories($input['category_ids'], $id)) {
                     $this->db->rollback();
@@ -131,11 +130,11 @@ class Event extends BaseClass
             $statement->execute(array("event_id" => $id));
 
             $event = $statement->fetch(\PDO::FETCH_ASSOC);
+            $event['category_ids'] = str_split($event['category_ids']);
 
             if (count($event['category_ids']) >= 1) {
-                $statement = $this->db->prepare(delete_event_category);
-                $event_id = $id;
-                $statement->execute(array($event_id));
+                $statement = $this->db->prepare(delete_event_categories);
+                $statement->execute(array('event_id' => $id));
             }
 
             $statement = $this->db->prepare(delete_event);

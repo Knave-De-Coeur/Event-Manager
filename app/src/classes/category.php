@@ -19,6 +19,11 @@ class Category extends BaseClass
         try {
             $statement = $this->db->query(select_all_categories);
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+            foreach ($result as $event) {
+                $event['category_ids'] = str_split($event['category_ids']);
+            }
+
             return $result;
         } catch (\PDOException $e) {
             exit($e->getMessage());
@@ -30,7 +35,9 @@ class Category extends BaseClass
         try {
             $statement = $this->db->prepare(select_category_by_id);
             $statement->execute(array($id));
-            return $statement->fetch(\PDO::FETCH_ASSOC);
+            $event = $statement->fetch(\PDO::FETCH_ASSOC);
+            $event['category_ids'] = str_split($event['category_ids']);
+            return $event;
         } catch (\PDOException $e) {
             exit($e->getMessage());
         }

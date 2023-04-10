@@ -65,7 +65,7 @@ define("delete_category", "DELETE FROM Categories
 
 // TODO: fix this query
 define("select_all_events_with_cat", "
-SELECT e.*, city.Id as city_id, city.Name as city_name, GROUP_CONCAT(c.Id) as categories
+SELECT e.*, city.Id as city_id, city.Name as city_name, GROUP_CONCAT(c.Id) as category_ids
 FROM Events as e
          INNER JOIN Cities city on e.CityId = city.Id
          INNER JOIN EventCategories ec on e.Id = ec.EventId
@@ -73,7 +73,7 @@ FROM Events as e
 ");
 
 define("select_event_with_cat_by_id", "
-SELECT e.*, city.Id as city_id, city.Name as city_name, GROUP_CONCAT(c.Id) as categories
+SELECT e.*, city.Id as city_id, city.Name as city_name, GROUP_CONCAT(c.Id) as category_ids
 FROM Events e
          INNER JOIN Cities city on e.CityId = city.Id
          INNER JOIN EventCategories ec on e.Id = ec.EventId
@@ -106,6 +106,6 @@ define("delete_event", "DELETE FROM Events
             WHERE Id = :id;
         ");
 
-define("delete_event_category", "DELETE FROM EventCategories
+define("delete_event_categories", "DELETE FROM EventCategories
             WHERE EventId = :event_id;
         ");
