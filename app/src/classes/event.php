@@ -61,6 +61,7 @@ class Event extends BaseClass
             $statement->execute(array(
                 'name' => $input['name'],
                 'organizer'  => $input['organizer'],
+                'description'  => $input['description'],
                 'city_id' => $input['city_id'],
                 'time_start' => $input['time_start'],
                 'time_end' => $input['time_end'],
@@ -100,6 +101,7 @@ class Event extends BaseClass
                 'id' => $id,
                 'name' => $input['name'],
                 'organizer'  => $input['organizer'],
+                'description'  => $input['organizer'],
                 'city_id' => $input['city_id'],
                 'time_start' => $input['time_start'],
                 'time_end' => $input['time_end'],
