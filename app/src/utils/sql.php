@@ -57,6 +57,12 @@ define("update_category", "UPDATE category
             WHERE id = :id;
         ");
 
+define("update_categories_no_parent", "UPDATE category
+            SET 
+                parent_id  = 0
+            WHERE parent_id = :parent_id;
+        ");
+
 define("delete_category", "DELETE FROM category
             WHERE id = :id;
         ");

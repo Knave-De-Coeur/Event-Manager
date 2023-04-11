@@ -41,7 +41,7 @@ class Category extends BaseClass
             $statement = $this->db->prepare(insert_category);
             $statement->execute(array(
                 'name' => $input['name'],
-                'parentId' => (int) $input['parent_id']
+                'parent_id' => (int) $input['parent_id']
             ));
             return $this->db->lastInsertID();
         } catch (\PDOException $e) {
@@ -56,7 +56,7 @@ class Category extends BaseClass
             $statement->execute(array(
                 'id' => (int) $id,
                 'name' => $input['name'],
-                'parentId' => (int) $input['parent_id']
+                'parent_id' => (int) $input['parent_id']
             ));
             return $statement->rowCount();
         } catch (\PDOException $e) {
@@ -69,9 +69,15 @@ class Category extends BaseClass
         try {
             $this->db->beginTransaction();
 
+            // remove relating event_categories
             $statement = $this->db->prepare(delete_category_events_by_cat_id);
             $statement->execute(array('category_id' => $id));
 
+            // update all child categories to have no parent
+            $statement = $this->db->prepare(update_categories_no_parent);
+            $statement->execute(array('parent_id' => $id));
+
+            // finally, remove category
             $statement = $this->db->prepare(delete_category);
             $statement->execute(array('id' => $id));
 
