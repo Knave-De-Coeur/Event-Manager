@@ -61,6 +61,11 @@ define("delete_category", "DELETE FROM category
             WHERE id = :id;
         ");
 
+define("delete_category_events_by_cat_id", "DELETE
+                        FROM event_category 
+                            WHERE category_id = :category_id;
+                        ");
+
 // event queries
 
 // TODO: fix this query

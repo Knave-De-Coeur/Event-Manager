@@ -67,8 +67,15 @@ class Category extends BaseClass
     public function delete($id)
     {
         try {
+            $this->db->beginTransaction();
+
+            $statement = $this->db->prepare(delete_category_events_by_cat_id);
+            $statement->execute(array('category_id' => $id));
+
             $statement = $this->db->prepare(delete_category);
             $statement->execute(array('id' => $id));
+
+            $this->db->commit();
             return $statement->rowCount();
         } catch (\PDOException $e) {
             exit($e->getMessage());
