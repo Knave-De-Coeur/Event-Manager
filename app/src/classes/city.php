@@ -29,7 +29,7 @@ class City extends BaseClass
     {
         try {
             $statement = $this->db->prepare(select_city_by_id);
-            $statement->execute(array($id));
+            $statement->execute(array('id' => $id));
             return $statement->fetch(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
             exit($e->getMessage());

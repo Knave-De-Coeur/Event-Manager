@@ -22,6 +22,9 @@ class Event extends BaseClass
         try {
             $statement = $this->db->query(select_all_events_with_cat);
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($result as $event) {
+                $event['category_ids'] = explode(",", $event['category_ids']);
+            }
             return $result;
         } catch (\PDOException $e) {
             exit($e->getMessage());
@@ -32,8 +35,10 @@ class Event extends BaseClass
     {
         try {
             $statement = $this->db->prepare(select_event_with_cat_by_id);
-            $statement->execute(array("event_id" => $id));
-            return $statement->fetch(\PDO::FETCH_ASSOC);
+            $statement->execute(array('event_id' => $id));
+            $event = $statement->fetch(\PDO::FETCH_ASSOC);
+            $event['category_ids'] = explode(",", $event['category_ids']);
+            return $event;
         } catch (\PDOException $e) {
             exit($e->getMessage());
         }
@@ -127,7 +132,7 @@ class Event extends BaseClass
             $this->db->beginTransaction();
 
             $statement = $this->db->prepare(select_event_with_cat_by_id);
-            $statement->execute(array("event_id" => $id));
+            $statement->execute(array('event_id' => $id));
 
             $event = $statement->fetch(\PDO::FETCH_ASSOC);
             $event['category_ids'] = str_split($event['category_ids']);
