@@ -2,12 +2,12 @@
 
 namespace src\controllers;
 
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/category.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/category.php';
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
 
-use src\classes\Response;
 use src\controllers\BaseController as BaseController;
-use src\classes\Category as Category;
+use src\models\Response as Response;
+use src\models\Category as Category;
 
 class CategoryController extends BaseController
 {
@@ -31,14 +31,14 @@ class CategoryController extends BaseController
         if ($res != null) {
             $response = new Response(
                 code: 200,
-                msg: "Category Successfully Updated!",
+                msg: "Successfully got categories!",
                 body: $res,
                 errorMsg: null,
             );
         } else {
             $response = new Response(
                 code: $err->getCode(),
-                msg: "Something went wrong updating the category",
+                msg: "Something went wrong getting the categories",
                 body: null,
                 errorMsg: $err->getMsg()
             );
@@ -52,7 +52,7 @@ class CategoryController extends BaseController
         if ($res != null) {
             $response = new Response(
                 code: 200,
-                msg: "Category Successfully Updated!",
+                msg: "Successfully Grabbed Category!",
                 body: $res,
                 errorMsg: null,
             );
@@ -80,14 +80,14 @@ class CategoryController extends BaseController
         if ($res != null) {
             $response = new Response(
                 code: 201,
-                msg: "Category Successfully Updated!",
+                msg: "Category Successfully Inserted!",
                 body: $res,
                 errorMsg: null,
             );
         } else {
             $response = new Response(
                 code: $err->getCode(),
-                msg: "Something went wrong updating the category",
+                msg: "Something went wrong inserting the category",
                 body: new \stdClass,
                 errorMsg: $err->getMsg()
             );
@@ -132,7 +132,7 @@ class CategoryController extends BaseController
             return $this->notFoundResponse();
         }
         list($res, $err) = $this->category->delete($this->id);
-        if ($res != null) {
+        if ($res) {
             $response = new Response(
                 code: 200,
                 msg: "Category Successfully Deleted!",
@@ -140,12 +140,21 @@ class CategoryController extends BaseController
                 errorMsg: null,
             );
         } else {
-            $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong deleting the category",
-                body: new \stdClass,
-                errorMsg: $err->getMsg(),
-            );
+            if ($err != null) {
+                $response = new Response(
+                    code: $err->getCode(),
+                    msg: "Something went wrong deleting the category",
+                    body: new \stdClass,
+                    errorMsg: $err->getMsg(),
+                );
+            } else {
+                $response = new Response(
+                    code: 404,
+                    msg: "Something went wrong",
+                    body: new \stdClass,
+                    errorMsg: "No Category was deleted.",
+                );
+            }
         }
         return $response;
     }

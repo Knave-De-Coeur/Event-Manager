@@ -2,7 +2,7 @@
 
 namespace src\controllers;
 
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/event.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/event.php';
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
 
 use src\controllers\BaseController as BaseController;

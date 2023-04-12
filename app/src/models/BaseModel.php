@@ -1,6 +1,6 @@
 <?php
 
-namespace src\classes;
+namespace src\models;
 
 use src\utils\Database as Database;
 

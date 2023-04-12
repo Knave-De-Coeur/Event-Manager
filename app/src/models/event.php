@@ -1,10 +1,10 @@
 <?php
 
-namespace src\classes;
+namespace src\models;
 
-use src\classes\BaseModel as BaseModel;
-use src\classes\City as City;
-use src\classes\Category as Category;
+use src\models\BaseModel as BaseModel;
+use src\models\City as City;
+use src\models\Category as Category;
 
 class Event extends BaseModel
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace src\classes;
+namespace src\models;
 
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/BaseModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/BaseModel.php';
 
-use src\classes\BaseModel as BaseModel;
+use src\models\BaseModel as BaseModel;
 
 class Category extends BaseModel
 {
@@ -76,8 +76,6 @@ class Category extends BaseModel
 
     public function delete($id)
     {
-        $result = null;
-        $error = null;
         try {
             $this->db->beginTransaction();
 
@@ -94,11 +92,11 @@ class Category extends BaseModel
             $statement->execute(array('id' => $id));
 
             $this->db->commit();
-            $result = $statement->rowCount();
+            $this->setResult($statement->rowCount());
         } catch (\PDOException $e) {
-            $error = $e;
+            $this->setError($e);
         }
 
-        return array($result, $error);
+        return array($this->getResult(), $this->getError());
     }
 }

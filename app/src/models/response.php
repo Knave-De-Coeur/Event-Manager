@@ -1,6 +1,6 @@
 <?php
 
-namespace src\classes;
+namespace src\models;
 
 class Response {
 

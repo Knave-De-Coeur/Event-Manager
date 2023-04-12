@@ -2,9 +2,9 @@
 
 namespace src\controllers;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/classes/response.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/models/response.php';
 
-use src\classes\Response as Response;
+use src\models\Response as Response;
 use src\utils\Database as Database;
 
 abstract class BaseController

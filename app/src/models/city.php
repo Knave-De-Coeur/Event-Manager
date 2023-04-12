@@ -1,11 +1,11 @@
 <?php
 
-namespace src\classes;
+namespace src\models;
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/BaseModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/BaseModel.php';
 
-use src\classes\BaseModel as BaseModel;
+use src\models\BaseModel as BaseModel;
 
 class City extends BaseModel
 {
@@ -18,11 +18,12 @@ class City extends BaseModel
     {
         try {
             $statement = $this->db->query(select_all_cities);
-            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
-            return $result;
+            $this->setResult($statement->fetchAll(\PDO::FETCH_ASSOC));
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
     public function getById($id)
@@ -30,26 +31,34 @@ class City extends BaseModel
         try {
             $statement = $this->db->prepare(select_city_by_id);
             $statement->execute(array('id' => $id));
-            return $statement->fetch(\PDO::FETCH_ASSOC);
+            $res = $statement->fetch(\PDO::FETCH_ASSOC);
+            if ($res) {
+                $this->setResult((object)$res);
+            }
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
-    public function insert(Array $category)
+    public function insert(Array $city)
     {
         try {
             $statement = $this->db->prepare(insert_city);
             $statement->execute(array(
-                'name' => $category['name'],
-                'population'  => $category['population'],
-                'size' => $category['size'],
-                'capital' => $category['capital'],
+                'name' => $city['name'],
+                'population'  => $city['population'],
+                'size' => $city['size'],
+                'capital' => $city['capital'],
             ));
-            return $this->db->lastInsertID();
+            $city['id'] = $this->db->lastInsertID();
+            $this->setResult($city);;
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
     public function update($id, Array $input)
@@ -63,10 +72,11 @@ class City extends BaseModel
                 'size'  => $input['size'],
                 'capital' => $input['capital'],
             ));
-            return $statement->rowCount();
+            $this->setResult($statement->rowCount());
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+        return array($this->getResult(), $this->getError());
     }
 
     public function delete($id)
@@ -74,9 +84,11 @@ class City extends BaseModel
         try {
             $statement = $this->db->prepare(delete_city);
             $statement->execute(array('id' => $id));
-            return $statement->rowCount();
+            $this->setResult($statement->rowCount());
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 }
