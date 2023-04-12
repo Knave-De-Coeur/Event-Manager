@@ -74,22 +74,41 @@ define("delete_category_events_by_cat_id", "DELETE
 
 // event queries
 
-// TODO: fix this query
 define("select_all_events_with_cat", "
-SELECT e.*, c.id as city_id, c.name as city_name, GROUP_CONCAT(ct.id) as category_ids
+SELECT
+    e.id,
+    e.name,
+    e.organizer,
+    e.description,
+    e.time_start,
+    e.time_end,
+    c.id as city_id,
+    c.name as city_name,
+    GROUP_CONCAT(ct.id) as category_ids
 FROM event as e
          INNER JOIN city c on e.city_id = c.Id
-         INNER JOIN event_category ec on e.id = ec.event_id
-         INNER JOIN category ct on ct.Id = ec.category_id;
+         LEFT JOIN event_category ec on ec.event_id = e.id
+         LEFT JOIN category ct on ct.Id = ec.category_id
+GROUP BY e.id;
 ");
 
 define("select_event_with_cat_by_id", "
-SELECT e.*, c.id as city_id, c.name as city_name, GROUP_CONCAT(ct.id) as category_ids
+SELECT
+    e.id,
+    e.name,
+    e.organizer,
+    e.description,
+    e.time_start,
+    e.time_end,
+    c.id as city_id,
+    c.name as city_name,
+    GROUP_CONCAT(ct.id) as category_ids
 FROM event as e
          INNER JOIN city c on e.city_id = c.Id
-         INNER JOIN event_category ec on e.id = ec.event_id
-         INNER JOIN category ct on ct.Id = ec.category_id
-WHERE e.id = :event_id");
+         LEFT JOIN event_category ec on ec.event_id = e.id
+         LEFT JOIN category ct on ct.Id = ec.category_id
+WHERE e.id = :event_id
+GROUP BY e.id;");
 
 define("insert_event", "INSERT INTO event 
                 (name, organizer, description, city_id, time_start, time_end)
@@ -107,6 +126,7 @@ define("update_event", "UPDATE event
             SET 
                 name = :name,
                 organizer  = :organizer,
+                description = :description,
                 city_id = :city_id,
                 time_start = :time_start,
                 time_end = :time_end

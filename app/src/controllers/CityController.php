@@ -39,7 +39,7 @@ class CityController extends BaseController
                 code: 200,
                 msg: "Successfully got cities!",
                 body: $res,
-                errorMsg: new \stdClass,
+                errorMsg: null,
             );
         }
 

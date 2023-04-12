@@ -36,7 +36,7 @@ class EventController extends BaseController
                 code: 200,
                 msg: "Successfully got events!",
                 body: $res,
-                errorMsg: new \stdClass,
+                errorMsg: null,
             );
         }
 
@@ -167,6 +167,9 @@ class EventController extends BaseController
             return false;
         }
         if (! isset($input['organizer'])) {
+            return false;
+        }
+        if (! isset($input['description'])) {
             return false;
         }
         if (! isset($input['city_id'])) {

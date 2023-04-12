@@ -38,12 +38,9 @@ class Event extends BaseModel
         try {
             $statement = $this->db->prepare(select_event_with_cat_by_id);
             $statement->execute(array('event_id' => $id));
-            // TODO: fix this since it's an inner join
             $event = $statement->fetch(\PDO::FETCH_ASSOC);
-            if ($event['category_ids'] != null) {
+            if ($event) {
                 $event['category_ids'] = explode(",", $event['category_ids']);
-            }
-            if ($event['id'] != null) {
                 $this->setResult((object)$event);
             }
         } catch (\PDOException $e) {
@@ -114,7 +111,7 @@ class Event extends BaseModel
                 'id' => $id,
                 'name' => $input['name'],
                 'organizer'  => $input['organizer'],
-                'description'  => $input['organizer'],
+                'description'  => $input['description'],
                 'city_id' => $input['city_id'],
                 'time_start' => $input['time_start'],
                 'time_end' => $input['time_end'],
