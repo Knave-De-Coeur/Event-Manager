@@ -23,7 +23,9 @@ class Event extends BaseModel
             $statement = $this->db->query(select_all_events_with_cat);
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             foreach ($result as $event) {
-                $event['category_ids'] = explode(",", $event['category_ids']);
+                if (isset($event['category_ids'])) {
+                    $event['category_ids'] = explode(",", $event['category_ids']);
+                }
             }
             $this->setResult($result);
         } catch (\PDOException $e) {

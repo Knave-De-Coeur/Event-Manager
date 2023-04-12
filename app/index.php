@@ -12,6 +12,7 @@ use Dotenv\Dotenv;
 use src\controllers\CategoryController as CategoryController;
 use src\controllers\CityController as CityController;
 use src\controllers\EventController as EventController;
+use src\models\Response as Response;
 use src\utils\database as db;
 use src\models\City as City;
 use src\models\Category as Category;
@@ -75,5 +76,15 @@ if ($uri[1] == "city" || $uri[1] == "cities") {
     echo "TODO some message";
 }
 
-$controller->processRequest();
+try {
+    $controller->processRequest();
+} catch(\Exception $e) {
+    $response = new Response(
+        code: 500,
+        msg: "something went wrong",
+        body: $e->getMessage(),
+        errorMsg: null,
+    );
+    $controller->processResponse($response);
+}
 
