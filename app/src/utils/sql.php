@@ -88,7 +88,8 @@ SELECT
     e.time_end,
     c.id as city_id,
     c.name as city_name,
-    GROUP_CONCAT(ct.id) as category_ids
+    GROUP_CONCAT(ct.id) as category_ids,
+    GROUP_CONCAT(ct.name) as category_names
 FROM event as e
          INNER JOIN city c on e.city_id = c.Id
          LEFT JOIN event_category ec on ec.event_id = e.id
@@ -106,7 +107,8 @@ SELECT
     e.time_end,
     c.id as city_id,
     c.name as city_name,
-    GROUP_CONCAT(ct.id) as category_ids
+    GROUP_CONCAT(ct.id) as category_ids,
+    GROUP_CONCAT(ct.name) as category_names
 FROM event as e
          INNER JOIN city c on e.city_id = c.Id
          LEFT JOIN event_category ec on ec.event_id = e.id
