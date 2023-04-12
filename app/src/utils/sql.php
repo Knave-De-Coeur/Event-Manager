@@ -35,14 +35,18 @@ define("delete_city", "DELETE FROM city
 
 // category queries
 
-define("select_all_categories", "SELECT * 
-                        FROM category;
-                    ");
+define("select_all_categories", "
+SELECT c.id, c.name, c2.name as parent_name, c2.id as parent_id 
+FROM category as c 
+LEFT JOIN category c2 on c.parent_id = c2.id;
+");
 
-define("select_category_by_id", "SELECT *
-                        FROM category 
-                            WHERE id = :id;
-                        ");
+define("select_category_by_id", "
+SELECT c.id, c.name, c2.name as parent_name, c2.id as parent_id
+FROM category as c
+LEFT JOIN category c2 on c.parent_id = c2.id
+WHERE c.id = :id;
+");
 
 define("insert_category", "INSERT INTO category 
                 (name, parent_id)
