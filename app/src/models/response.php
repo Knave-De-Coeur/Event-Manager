@@ -4,7 +4,7 @@ namespace src\models;
 
 class Response {
 
-    private int $code;
+    private string $code;
     private string $msg;
     private null|string $errorMsg;
     private object|array $body;

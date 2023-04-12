@@ -25,10 +25,12 @@ class Event extends BaseModel
             foreach ($result as $event) {
                 $event['category_ids'] = explode(",", $event['category_ids']);
             }
-            return $result;
+            $this->setResult($result);
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
     public function getById(int $id)
@@ -36,20 +38,27 @@ class Event extends BaseModel
         try {
             $statement = $this->db->prepare(select_event_with_cat_by_id);
             $statement->execute(array('event_id' => $id));
+            // TODO: fix this since it's an inner join
             $event = $statement->fetch(\PDO::FETCH_ASSOC);
-            $event['category_ids'] = explode(",", $event['category_ids']);
-            return $event;
+            if ($event['category_ids'] != null) {
+                $event['category_ids'] = explode(",", $event['category_ids']);
+            }
+            if ($event['id'] != null) {
+                $this->setResult((object)$event);
+            }
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
-    public function insert(array $category)
+    public function insert(array $event)
     {
         try {
             $this->db->beginTransaction();
 
-            $city = $this->city->getById($category['city_id']);
+            $city = $this->city->getById($event['city_id']);
 
             if ($city == null) {
                 $this->db->Rollback();
@@ -59,18 +68,18 @@ class Event extends BaseModel
             $statement = $this->db->prepare(insert_event);
 
             $statement->execute(array(
-                'name' => $category['name'],
-                'organizer'  => $category['organizer'],
-                'description'  => $category['description'],
-                'city_id' => $category['city_id'],
-                'time_start' => $category['time_start'],
-                'time_end' => $category['time_end'],
+                'name' => $event['name'],
+                'organizer'  => $event['organizer'],
+                'description'  => $event['description'],
+                'city_id' => $event['city_id'],
+                'time_start' => $event['time_start'],
+                'time_end' => $event['time_end'],
             ));
 
             $event_id = $this->db->lastInsertId();
 
-            if (count($category['category_ids']) >= 1) {
-                if (!$this->insertBulkEventCategories($category['category_ids'], $event_id)) {
+            if (count($event['category_ids']) >= 1) {
+                if (!$this->insertBulkEventCategories($event['category_ids'], $event_id)) {
                     $this->db->rollback();
                     throw new \PDOException("category doesn't exist");
                 }
@@ -78,10 +87,14 @@ class Event extends BaseModel
 
             $this->db->Commit();
 
-            return $event_id;
+            $event['id'] = $event_id;
+
+            $this->setResult($event);
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
     public function update(int $id, array $input)
@@ -122,10 +135,12 @@ class Event extends BaseModel
 
             $this->db->Commit();
 
-            return $statement->rowCount();
+            $this->setResult($statement->rowCount());
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
     public function delete(int $id)
@@ -149,10 +164,12 @@ class Event extends BaseModel
 
             $this->db->commit();
 
-            return $statement->rowCount();
+            $this->setResult($statement->rowCount());
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
     public function insertBulkEventCategories(array $cat_ids, int $event_id) : bool {

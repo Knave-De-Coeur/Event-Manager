@@ -13,8 +13,8 @@ use src\controllers\CategoryController as CategoryController;
 use src\controllers\CityController as CityController;
 use src\controllers\EventController as EventController;
 use src\utils\database as db;
-use src\classes\City as City;
-use src\classes\Category as Category;
+use src\models\City as City;
+use src\models\Category as Category;
 //use src\utils\cache as cache;
 
 header("Content-Type: application/json; charset=UTF-8");

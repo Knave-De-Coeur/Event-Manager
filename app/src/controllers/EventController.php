@@ -6,7 +6,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/event.php';
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
 
 use src\controllers\BaseController as BaseController;
-use src\utils\classes\Event as Event;
+use src\models\Event as Event;
+use src\models\Response;
 
 class EventController extends BaseController
 {
@@ -21,61 +22,142 @@ class EventController extends BaseController
 
     public function getAll()
     {
-        $result = $this->event->getAll();
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = json_encode($result);
+        list($res, $err) = $this->event->getAll();
+
+        if ($err != null) {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong getting the events.",
+                body: new \stdClass,
+                errorMsg: $err->getMessage()
+            );
+        } else {
+            $response = new Response(
+                code: 200,
+                msg: "Successfully got events!",
+                body: $res,
+                errorMsg: new \stdClass,
+            );
+        }
+
         return $response;
     }
 
     public function getById()
     {
-        $result = $this->event->getById($this->id);
-        if (! $result) {
+        list($res, $err) = $this->event->getById($this->id);
+
+        if ($err != null) {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong getting the Event",
+                body: new \stdClass,
+                errorMsg: $err->getMessage()
+            );
+        } else if (!$res) {
             return $this->notFoundResponse();
+        } else {
+            $response = new Response(
+                code: 200,
+                msg: "Successfully Grabbed the Event!",
+                body: $res,
+                errorMsg: null,
+            );
         }
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = json_encode($result);
         return $response;
     }
 
     public function insert()
     {
-        $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        if (! $this->validateEvent($input)) {
+        $event = (array) json_decode(file_get_contents('php://input'), TRUE);
+        if (! $this->validateEvent($event)) {
             return $this->badRequestResponse();
         }
-        $result = $this->event->insert($input);
-        $input['id'] = (int) $result;
-        $response['status_code_header'] = 'HTTP/1.1 201 Created';
-        $response['body'] = json_encode($input);
+        list($res, $err) = $this->event->insert($event);
+
+        if ($err != null) {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong inserting the Event",
+                body: new \stdClass,
+                errorMsg: $err->getMessage()
+            );
+        } else {
+            $response = new Response(
+                code: 201,
+                msg: "Event Successfully Inserted!",
+                body: $res,
+                errorMsg: null,
+            );
+        }
         return $response;
     }
 
     public function update()
     {
-        $result = $this->event->getById($this->id);
-        if (! $result) {
+        $event = $this->event->getById($this->id);
+        if (! $event) {
             return $this->notFoundResponse();
         }
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
         if (! $this->validateEvent($input)) {
             return $this->badRequestResponse();
         }
-        $this->event->update($this->id, $input);
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = null;
+        list($res, $err) = $this->event->update($this->id, $input);
+        if ($err != null) {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong updating the event",
+                body: new \stdClass,
+                errorMsg: $err->getMessage()
+            );
+        } else if (!$res) {
+            $response = new Response(
+                code: 404,
+                msg: "No Event was updated!",
+                body: new \stdClass,
+                errorMsg: null,
+            );
+        } else {
+            $response = new Response(
+                code: 200,
+                msg: "Event Successfully Updated!",
+                body: new \stdClass,
+                errorMsg: null,
+            );
+        }
         return $response;
     }
 
     public function delete()
     {
-        $result = $this->event->getById($this->id);
-        if (! $result) {
+        $event = $this->event->getById($this->id);
+        if (!$event) {
             return $this->notFoundResponse();
         }
-        $this->event->delete($this->id);
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = null;
+        list($res, $err) = $this->event->delete($this->id);
+        if ($err != null) {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong deleting the Event",
+                body: new \stdClass,
+                errorMsg: $err->getMessage(),
+            );
+        } else if (!$res) {
+            $response = new Response(
+                code: 404,
+                msg: "Something went wrong",
+                body: new \stdClass,
+                errorMsg: "No Event was deleted.",
+            );
+        } else {
+            $response = new Response(
+                code: 200,
+                msg: "Event Successfully Deleted!",
+                body: new \stdClass,
+                errorMsg: null,
+            );
+        }
         return $response;
     }
 

@@ -31,7 +31,7 @@ class CityController extends BaseController
             $response = new Response(
                 code: $err->getCode(),
                 msg: "Something went wrong getting the cities.",
-                body: null,
+                body: new \stdClass,
                 errorMsg: $err->getMessage()
             );
         } else {
@@ -39,7 +39,7 @@ class CityController extends BaseController
                 code: 200,
                 msg: "Successfully got cities!",
                 body: $res,
-                errorMsg: null,
+                errorMsg: new \stdClass,
             );
         }
 

@@ -39,7 +39,7 @@ class CategoryController extends BaseController
             $response = new Response(
                 code: $err->getCode(),
                 msg: "Something went wrong getting the categories",
-                body: null,
+                body: new \stdClass,
                 errorMsg: $err->getMsg()
             );
         }
