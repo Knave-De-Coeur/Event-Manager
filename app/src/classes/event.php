@@ -1,12 +1,12 @@
 <?php
 
-namespace src\utils\classes;
+namespace src\classes;
 
-use src\classes\BaseClass as BaseClass;
+use src\classes\BaseModel as BaseModel;
 use src\classes\City as City;
 use src\classes\Category as Category;
 
-class Event extends BaseClass
+class Event extends BaseModel
 {
     private City|null $city;
     private Category|null $category;
@@ -44,12 +44,12 @@ class Event extends BaseClass
         }
     }
 
-    public function insert(array $input)
+    public function insert(array $category)
     {
         try {
             $this->db->beginTransaction();
 
-            $city = $this->city->getById($input['city_id']);
+            $city = $this->city->getById($category['city_id']);
 
             if ($city == null) {
                 $this->db->Rollback();
@@ -59,18 +59,18 @@ class Event extends BaseClass
             $statement = $this->db->prepare(insert_event);
 
             $statement->execute(array(
-                'name' => $input['name'],
-                'organizer'  => $input['organizer'],
-                'description'  => $input['description'],
-                'city_id' => $input['city_id'],
-                'time_start' => $input['time_start'],
-                'time_end' => $input['time_end'],
+                'name' => $category['name'],
+                'organizer'  => $category['organizer'],
+                'description'  => $category['description'],
+                'city_id' => $category['city_id'],
+                'time_start' => $category['time_start'],
+                'time_end' => $category['time_end'],
             ));
 
             $event_id = $this->db->lastInsertId();
 
-            if (count($input['category_ids']) >= 1) {
-                if (!$this->insertBulkEventCategories($input['category_ids'], $event_id)) {
+            if (count($category['category_ids']) >= 1) {
+                if (!$this->insertBulkEventCategories($category['category_ids'], $event_id)) {
                     $this->db->rollback();
                     throw new \PDOException("category doesn't exist");
                 }

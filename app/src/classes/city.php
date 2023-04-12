@@ -3,11 +3,11 @@
 namespace src\classes;
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/BaseClass.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/BaseModel.php';
 
-use src\classes\BaseClass as BaseClass;
+use src\classes\BaseModel as BaseModel;
 
-class City extends BaseClass
+class City extends BaseModel
 {
     public function __construct($db)
     {
@@ -36,15 +36,15 @@ class City extends BaseClass
         }
     }
 
-    public function insert(Array $input)
+    public function insert(Array $category)
     {
         try {
             $statement = $this->db->prepare(insert_city);
             $statement->execute(array(
-                'name' => $input['name'],
-                'population'  => $input['population'],
-                'size' => $input['size'],
-                'capital' => $input['capital'],
+                'name' => $category['name'],
+                'population'  => $category['population'],
+                'size' => $category['size'],
+                'capital' => $category['capital'],
             ));
             return $this->db->lastInsertID();
         } catch (\PDOException $e) {

@@ -5,6 +5,7 @@ namespace src\controllers;
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/category.php';
 require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
 
+use src\classes\Response;
 use src\controllers\BaseController as BaseController;
 use src\classes\Category as Category;
 
@@ -26,22 +27,47 @@ class CategoryController extends BaseController
 
     public function getAll()
     {
-        $result = $this->category->getAll();
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = json_encode($result);
+        list($res, $err) = $this->category->getAll();
+        if ($res != null) {
+            $response = new Response(
+                code: 200,
+                msg: "Category Successfully Updated!",
+                body: $res,
+                errorMsg: null,
+            );
+        } else {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong updating the category",
+                body: null,
+                errorMsg: $err->getMsg()
+            );
+        }
         return $response;
     }
 
     public function getById()
     {
-        $result = $this->category->getById($this->id);
-        if (! $result) {
-            return $this->notFoundResponse();
+        list($res, $err) = $this->category->getById($this->id);
+        if ($res != null) {
+            $response = new Response(
+                code: 200,
+                msg: "Category Successfully Updated!",
+                body: $res,
+                errorMsg: null,
+            );
+        } else {
+            if ($err != null && $err->getCode() == 404 || $err == null) {
+                return $this->notFoundResponse();
+            }
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong getting the category",
+                body: new \stdClass,
+                errorMsg: $err->getMsg()
+            );
         }
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = json_encode($result);
         return $response;
-
     }
 
     public function insert()
@@ -50,10 +76,22 @@ class CategoryController extends BaseController
         if (! $this->validateCategory($input)) {
             return $this->badRequestResponse();
         }
-        $result = $this->category->insert($input);
-        $input['id'] = (int) $result;
-        $response['status_code_header'] = 'HTTP/1.1 201 Created';
-        $response['body'] = json_encode($input);
+        list($res, $err) = $this->category->insert($input);
+        if ($res != null) {
+            $response = new Response(
+                code: 201,
+                msg: "Category Successfully Updated!",
+                body: $res,
+                errorMsg: null,
+            );
+        } else {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong updating the category",
+                body: new \stdClass,
+                errorMsg: $err->getMsg()
+            );
+        }
         return $response;
 
     }
@@ -68,9 +106,22 @@ class CategoryController extends BaseController
         if (! $this->validateCategory($input)) {
             return $this->badRequestResponse();
         }
-        $this->category->update($this->id, $input);
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = null;
+        list($res, $err) = $this->category->update($this->id, $input);
+        if ($res != null) {
+            $response = new Response(
+                code: 200,
+                msg: "Category Successfully Updated!",
+                body: new \stdClass,
+                errorMsg: null,
+            );
+        } else {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong updating the category",
+                body: new \stdClass,
+                errorMsg: $err->getMsg()
+            );
+        }
         return $response;
     }
 
@@ -80,11 +131,23 @@ class CategoryController extends BaseController
         if (! $result) {
             return $this->notFoundResponse();
         }
-        $this->category->delete($this->id);
-        $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = null;
+        list($res, $err) = $this->category->delete($this->id);
+        if ($res != null) {
+            $response = new Response(
+                code: 200,
+                msg: "Category Successfully Deleted!",
+                body: new \stdClass,
+                errorMsg: null,
+            );
+        } else {
+            $response = new Response(
+                code: $err->getCode(),
+                msg: "Something went wrong deleting the category",
+                body: new \stdClass,
+                errorMsg: $err->getMsg(),
+            );
+        }
         return $response;
-
     }
 
     private function validateCategory($input)

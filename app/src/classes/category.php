@@ -2,11 +2,11 @@
 
 namespace src\classes;
 
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/BaseClass.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/src/classes/BaseModel.php';
 
-use src\classes\BaseClass as BaseClass;
+use src\classes\BaseModel as BaseModel;
 
-class Category extends BaseClass
+class Category extends BaseModel
 {
 
     public function __construct($db)
@@ -18,10 +18,12 @@ class Category extends BaseClass
     {
         try {
             $statement = $this->db->query(select_all_categories);
-            return $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $this->setResult($statement->fetchAll(\PDO::FETCH_ASSOC));
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+
+        return array($this->getResult(), $this->getError());
     }
 
     public function getById(int $id)
@@ -29,24 +31,31 @@ class Category extends BaseClass
         try {
             $statement = $this->db->prepare(select_category_by_id);
             $statement->execute(array('id' => $id));
-            return $statement->fetch(\PDO::FETCH_ASSOC);
+            $res = $statement->fetch(\PDO::FETCH_ASSOC);
+            if ($res) {
+                $this->setResult((object)$res);
+            }
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+        return array($this->getResult(), $this->getError());
     }
 
-    public function insert(Array $input)
+    public function insert(Array $category)
     {
         try {
             $statement = $this->db->prepare(insert_category);
             $statement->execute(array(
-                'name' => $input['name'],
-                'parent_id' => (int) $input['parent_id']
+                'name' => $category['name'],
+                'parent_id' => (int) $category['parent_id']
             ));
-            return $this->db->lastInsertID();
+            $category['id'] = $this->db->lastInsertID();
+            $this->setResult($category);
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+        return array($this->getResult(), $this->getError());
+
     }
 
     public function update($id, Array $input)
@@ -58,14 +67,17 @@ class Category extends BaseClass
                 'name' => $input['name'],
                 'parent_id' => (int) $input['parent_id']
             ));
-            return $statement->rowCount();
+            $this->setResult($statement->rowCount());
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $this->setError($e);
         }
+        return array($this->getResult(), $this->getError());
     }
 
     public function delete($id)
     {
+        $result = null;
+        $error = null;
         try {
             $this->db->beginTransaction();
 
@@ -82,9 +94,11 @@ class Category extends BaseClass
             $statement->execute(array('id' => $id));
 
             $this->db->commit();
-            return $statement->rowCount();
+            $result = $statement->rowCount();
         } catch (\PDOException $e) {
-            exit($e->getMessage());
+            $error = $e;
         }
+
+        return array($result, $error);
     }
 }
