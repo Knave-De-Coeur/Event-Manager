@@ -24,10 +24,50 @@ Build a basic event management app to track event venues in Malta. Before regist
 
 - clone repo, step into the directory and run following command (free up ports accordingly):
 ```
-docker-compoes up -d
+docker-compose up -d
 ```
 
-- This should setup the schema in a mysql with a bit of dummy data.
+- This should set-up the schema in a mysql with a bit of dummy data, the schema is the following:
+
+### <u>Events table: </u>
+
+| Column      | Type         | 
+|-------------|--------------|
+| id          | int (pk)     |
+| name        | varchar(20)  |
+| organizer   | varchar(20)  |
+| description | varchar(255) |
+| city_id     | int (fk)     |
+| time_start  | datetime     |
+| time_end    | datetime     |
+
+
+### <u>Categories table: </u>
+
+| Column    | Type         |
+|-----------|--------------|
+| id        | int (pk)     |
+| name      | varchar(20)  |
+| parent_id | varchar(20)  |
+
+### <u>Event Categories table: </u>
+
+| Column    | Type         |
+|-----------|--------------|
+| id        | int (pk)     |
+| name      | varchar(20)  |
+| parent_id | varchar(20)  |
+
+### <u>City table: </u>
+
+| Column     | Type        |
+|------------|-------------|
+| id         | int (pk)    |
+| name       | varchar(20) |
+| population | int         |
+| size       | int         |
+| capital    | tinyint(1)  |
+
 - Server will be loaded on `localhost:8080`
 - Now the following endpoints should be exposed
 
@@ -39,7 +79,20 @@ GET - http://localhost:8080/event/{{event_id}}
 POST - http://localhost:8080/event
 PUT - http://localhost:8080/event/{{event_id}}
 DELETE - http://localhost:8080/event/{{event_id}}
+
+payloads example :
+{
+    "name": "Jazz Event 2",
+    "organizer": "Jazz Cat",
+    "description": "This is a jazz event",
+    "time_start": "2023-07-14 20:00:00",
+    "time_end": "2023-07-14 23:00:00",
+    "city_id": 3,
+    "category_ids": [3]
+}
+
 ```
+
 ```
 City endpoints:
 
@@ -48,6 +101,15 @@ GET - http://localhost:8080/city/{{city_id}}
 POST - http://localhost:8080/city
 PUT - http://localhost:8080/city/{{city_id}}
 DELETE - http://localhost:8080/city/{{city_id}}
+
+Payload Example:
+
+{
+    "name": "Rabat",
+    "population": 5000,
+    "size": 2,
+    "capital": 1
+}
 ```
 ```
 Category endpoints:
@@ -57,4 +119,11 @@ GET - http://localhost:8080/category/{{category_id}}
 POST - http://localhost:8080/category
 PUT - http://localhost:8080/category/{{category_id}}
 DELETE - http://localhost:8080/category/{{category_id}}
+
+Payload Example:
+
+{
+    "name": "Hard Rock",
+    "parent_id": 1
+}
 ```
