@@ -12,9 +12,11 @@ class CityController extends BaseController
 {
     private City $city;
 
-    public function __construct($db, $requestMethod, $id, $city)
+    private const CITY_LIST_KEY = "city_l";
+
+    public function __construct($db, $cache, $requestMethod, $id, $city)
     {
-        parent::__construct($db, $requestMethod, $id);
+        parent::__construct($db, $cache, $requestMethod, $id);
 
         if ($city == null) {
             $this->city = new City($db);
@@ -25,6 +27,16 @@ class CityController extends BaseController
 
     public function getAll()
     {
+        $res = $this->cache->get($this::CITY_LIST_KEY);
+        if (!empty($res)) {
+            return new Response(
+                code: 200,
+                msg: "Successfully got cities!",
+                body: $res,
+                errorMsg: null,
+            );
+        }
+
         list($res, $err) = $this->city->getAll();
 
         if ($err != null) {
@@ -35,6 +47,7 @@ class CityController extends BaseController
                 errorMsg: $err->getMessage()
             );
         } else {
+            $this->cache->set($this::CITY_LIST_KEY, $res);
             $response = new Response(
                 code: 200,
                 msg: "Successfully got cities!",
@@ -87,6 +100,7 @@ class CityController extends BaseController
                 errorMsg: $err->getMessage()
             );
         } else {
+            $this->cache->del($this::CITY_LIST_KEY);
             $response = new Response(
                 code: 201,
                 msg: "Category Successfully Inserted!",
@@ -113,7 +127,7 @@ class CityController extends BaseController
                 code: $err->getCode(),
                 msg: "Something went wrong updating the city",
                 body: new \stdClass,
-                errorMsg: $err->getMsg()
+                errorMsg: $err->getMessage()
             );
         } else if (!$res) {
             $response = new Response(
@@ -123,6 +137,7 @@ class CityController extends BaseController
                 errorMsg: null,
             );
         } else {
+            $this->cache->del($this::CITY_LIST_KEY);
             $response = new Response(
                 code: 200,
                 msg: "City Successfully Updated!",
@@ -155,6 +170,7 @@ class CityController extends BaseController
                 errorMsg: "No City was deleted.",
             );
         } else {
+            $this->cache->del($this::CITY_LIST_KEY);
             $response = new Response(
                 code: 200,
                 msg: "City Successfully Deleted!",

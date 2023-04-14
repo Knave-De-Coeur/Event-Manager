@@ -70,7 +70,7 @@ class City extends BaseModel
                 'name' => $input['name'],
                 'population' => $input['population'],
                 'size'  => $input['size'],
-                'capital' => $input['capital'],
+                'capital' => (int) $input['capital'],
             ));
             $this->setResult($statement->rowCount());
         } catch (\PDOException $e) {

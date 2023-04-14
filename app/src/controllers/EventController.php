@@ -13,14 +13,27 @@ class EventController extends BaseController
 {
     private Event|null $event;
 
-    public function __construct($db, $requestMethod, $id, $city, $category)
+    private const EVENT_LIST_KEY = "event_l";
+
+
+    public function __construct($db, $cache, $requestMethod, $id, $city, $category)
     {
-        parent::__construct($db, $requestMethod, $id);
+        parent::__construct($db, $cache, $requestMethod, $id);
         $this->event = new Event($db, $city, $category);
     }
 
     public function getAll()
     {
+        $res = $this->cache->get($this::EVENT_LIST_KEY);
+        if (!empty($res)) {
+            return new Response(
+                code: 200,
+                msg: "Successfully got events!",
+                body: $res,
+                errorMsg: null,
+            );
+        }
+
         list($res, $err) = $this->event->getAll();
 
         if ($err != null) {
@@ -31,6 +44,7 @@ class EventController extends BaseController
                 errorMsg: $err->getMessage()
             );
         } else {
+            $this->cache->set($this::EVENT_LIST_KEY, $res);
             $response = new Response(
                 code: 200,
                 msg: "Successfully got events!",
@@ -82,6 +96,7 @@ class EventController extends BaseController
                 errorMsg: $err->getMessage()
             );
         } else {
+            $this->cache->del($this::EVENT_LIST_KEY);
             $response = new Response(
                 code: 201,
                 msg: "Event Successfully Inserted!",
@@ -118,6 +133,7 @@ class EventController extends BaseController
                 errorMsg: null,
             );
         } else {
+            $this->cache->del($this::EVENT_LIST_KEY);
             $response = new Response(
                 code: 200,
                 msg: "Event Successfully Updated!",
@@ -150,6 +166,7 @@ class EventController extends BaseController
                 errorMsg: "No Event was deleted.",
             );
         } else {
+            $this->cache->del($this::EVENT_LIST_KEY);
             $response = new Response(
                 code: 200,
                 msg: "Event Successfully Deleted!",

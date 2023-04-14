@@ -12,10 +12,11 @@ use src\models\Category as Category;
 class CategoryController extends BaseController
 {
     private Category $category;
+    private const CAT_LIST_KEY = "category_l";
 
-    public function __construct($db, $requestMethod, $id, $category)
+    public function __construct($db, $cache, $requestMethod, $id, $category)
     {
-        parent::__construct($db, $requestMethod, $id);
+        parent::__construct($db, $cache, $requestMethod, $id);
 
         if ($category == null) {
             $this->category = new Category($db);
@@ -27,20 +28,32 @@ class CategoryController extends BaseController
 
     public function getAll()
     {
-        list($res, $err) = $this->category->getAll();
-        if ($res != null) {
-            $response = new Response(
+        $res = $this->cache->get($this::CAT_LIST_KEY);
+        if (!empty($res)) {
+            return new Response(
                 code: 200,
                 msg: "Successfully got categories!",
                 body: $res,
                 errorMsg: null,
             );
-        } else {
+        }
+
+        list($res, $err) = $this->category->getAll();
+        if ($err != null) {
             $response = new Response(
                 code: $err->getCode(),
                 msg: "Something went wrong getting the categories",
                 body: new \stdClass,
                 errorMsg: $err->getMsg()
+            );
+
+        } else {
+            $this->cache->set($this::CAT_LIST_KEY, $res);
+            $response = new Response(
+                code: 200,
+                msg: "Successfully got categories!",
+                body: $res,
+                errorMsg: null,
             );
         }
         return $response;
@@ -78,6 +91,7 @@ class CategoryController extends BaseController
         }
         list($res, $err) = $this->category->insert($input);
         if ($res != null) {
+            $this->cache->del($this::CAT_LIST_KEY);
             $response = new Response(
                 code: 201,
                 msg: "Category Successfully Inserted!",
@@ -108,6 +122,7 @@ class CategoryController extends BaseController
         }
         list($res, $err) = $this->category->update($this->id, $input);
         if ($res != null) {
+            $this->cache->del($this::CAT_LIST_KEY);
             $response = new Response(
                 code: 200,
                 msg: "Category Successfully Updated!",
@@ -133,6 +148,7 @@ class CategoryController extends BaseController
         }
         list($res, $err) = $this->category->delete($this->id);
         if ($res) {
+            $this->cache->del($this::CAT_LIST_KEY);
             $response = new Response(
                 code: 200,
                 msg: "Category Successfully Deleted!",

@@ -5,7 +5,7 @@ require_once __DIR__. '/src/utils/database.php';
 require_once __DIR__. '/src/controllers/CityController.php';
 require_once __DIR__. '/src/controllers/CategoryController.php';
 require_once __DIR__. '/src/controllers/EventController.php';
-//include 'src/utils/cache.php';
+require_once __DIR__ . '/src/utils/cache.php';
 require 'vendor/autoload.php';
 
 use Dotenv\Dotenv;
@@ -16,7 +16,7 @@ use src\models\Response as Response;
 use src\utils\database as db;
 use src\models\City as City;
 use src\models\Category as Category;
-//use src\utils\cache as cache;
+use src\utils\Cache as cache;
 
 header("Content-Type: application/json; charset=UTF-8");
 if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -45,11 +45,7 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 $db = (new db());
-//
-//$cacheConn = (new cache\cache())->getConnection();
-//echo $cacheConn . "\n";
-
-
+$cache = new Cache();
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', $uri);
@@ -61,19 +57,16 @@ if (isset($uri[2])) {
     $id = (int) $uri[2];
 }
 
-
-$controller = null;
-
 if ($uri[1] == "city" || $uri[1] == "cities") {
-    $controller = new CityController($db, $requestMethod, $id, null);
+    $controller = new CityController($db, $cache, $requestMethod, $id, null);
 } else if ($uri[1] == "category" || $uri[1] == "categories")   {
-    $controller = new CategoryController($db, $requestMethod, $id, null);
+    $controller = new CategoryController($db, $cache, $requestMethod, $id, null);
 } else if ($uri[1] == "event" || $uri[1] == "events") {
     $city = new City($db);
     $category = new Category($db);
-    $controller = new EventController($db, $requestMethod, $id, $city, $category);
+    $controller = new EventController($db, $cache, $requestMethod, $id, $city, $category);
 }else {
-    $controller = new EventController(null, null, null, null, null);
+    $controller = new EventController(null, null, null, null, null, null);
     $response = new Response(
         code: 404,
         msg: "something went wrong",

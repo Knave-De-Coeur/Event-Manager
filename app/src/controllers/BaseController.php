@@ -3,19 +3,24 @@
 namespace src\controllers;
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/models/response.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/cache.php';
 
 use src\models\Response as Response;
 use src\utils\Database as Database;
+use src\utils\Cache as Cache;
 
 abstract class BaseController
 {
     protected Database|null $db;
+
+    public Cache $cache;
     private string|null $requestMethod;
 
     protected int|null $id;
 
-    public function __construct($db, $requestMethod, $id) {
+    public function __construct($db, $cache, $requestMethod, $id) {
         $this->db = $db;
+        $this->cache = $cache;
         $this->requestMethod = $requestMethod;
         $this->id = $id;
     }
