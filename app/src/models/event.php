@@ -20,7 +20,7 @@ class Event extends BaseModel
     public function getAll()
     {
         try {
-            $statement = $this->db->query(select_all_events_with_cat);
+            $statement = $this->db->query(SELECT_ALL_EVENTS);
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             foreach ($result as $event) {
                 if (isset($event['category_ids'])) {
@@ -38,7 +38,7 @@ class Event extends BaseModel
     public function getById(int $id)
     {
         try {
-            $statement = $this->db->prepare(select_event_with_cat_by_id);
+            $statement = $this->db->prepare(SELECT_EVENT_BY_ID);
             $statement->execute(array('event_id' => $id));
             $event = $statement->fetch(\PDO::FETCH_ASSOC);
             if ($event) {
@@ -66,7 +66,7 @@ class Event extends BaseModel
                 throw new \PDOException("city does not exist");
             }
 
-            $statement = $this->db->prepare(insert_event);
+            $statement = $this->db->prepare(INSERT_EVENT);
 
             $statement->execute(array(
                 'name' => $event['name'],
@@ -110,7 +110,7 @@ class Event extends BaseModel
                 throw new \PDOException("city does not exist");
             }
 
-            $statement = $this->db->prepare(update_event);
+            $statement = $this->db->prepare(UPDATE_EVENT);
             $statement->execute(array(
                 'id' => $id,
                 'name' => $input['name'],
@@ -125,7 +125,7 @@ class Event extends BaseModel
             // remove all pre-existing rows and insert anything coming from the request so long as it is valid
             if (count($input['category_ids']) >= 1) {
 
-                $statement = $this->db->prepare(delete_event_categories);
+                $statement = $this->db->prepare(DELETE_EVENT_CATEGORIES);
                 $statement->execute(array("event_id" => $id));
 
                 if (!$this->insertBulkEventCategories($input['category_ids'], $id)) {
@@ -149,18 +149,18 @@ class Event extends BaseModel
         try {
             $this->db->beginTransaction();
 
-            $statement = $this->db->prepare(select_event_with_cat_by_id);
+            $statement = $this->db->prepare(SELECT_EVENT_BY_ID);
             $statement->execute(array('event_id' => $id));
 
             $event = $statement->fetch(\PDO::FETCH_ASSOC);
             $event['category_ids'] = str_split($event['category_ids']);
 
             if (count($event['category_ids']) >= 1) {
-                $statement = $this->db->prepare(delete_event_categories);
+                $statement = $this->db->prepare(DELETE_EVENT_CATEGORIES);
                 $statement->execute(array('event_id' => $id));
             }
 
-            $statement = $this->db->prepare(delete_event);
+            $statement = $this->db->prepare(DELETE_EVENT);
             $statement->execute(array('id' => $id));
 
             $this->db->commit();
@@ -174,7 +174,7 @@ class Event extends BaseModel
     }
 
     public function insertBulkEventCategories(array $cat_ids, int $event_id) : bool {
-        $statement = $this->db->prepare(insert_event_category);
+        $statement = $this->db->prepare(INSERT_EVENT_CATEGORY);
         foreach ($cat_ids as $cat_id) {
             $cat = $this->category->getById($cat_id);
             if ($cat == null) {

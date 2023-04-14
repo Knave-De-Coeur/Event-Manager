@@ -17,7 +17,7 @@ class City extends BaseModel
     public function getAll()
     {
         try {
-            $statement = $this->db->query(select_all_cities);
+            $statement = $this->db->query(SELECT_CITIES);
             $this->setResult($statement->fetchAll(\PDO::FETCH_ASSOC));
         } catch (\PDOException $e) {
             $this->setError($e);
@@ -29,7 +29,7 @@ class City extends BaseModel
     public function getById($id)
     {
         try {
-            $statement = $this->db->prepare(select_city_by_id);
+            $statement = $this->db->prepare(SELECT_CITY_BY_ID);
             $statement->execute(array('id' => $id));
             $res = $statement->fetch(\PDO::FETCH_ASSOC);
             if ($res) {
@@ -45,12 +45,12 @@ class City extends BaseModel
     public function insert(Array $city)
     {
         try {
-            $statement = $this->db->prepare(insert_city);
+            $statement = $this->db->prepare(INSERT_CITY);
             $statement->execute(array(
                 'name' => $city['name'],
                 'population'  => $city['population'],
                 'size' => $city['size'],
-                'capital' => $city['capital'],
+                'capital' => (int) $city['capital'],
             ));
             $city['id'] = $this->db->lastInsertID();
             $this->setResult($city);;
@@ -64,7 +64,7 @@ class City extends BaseModel
     public function update($id, Array $input)
     {
         try {
-            $statement = $this->db->prepare(update_city);
+            $statement = $this->db->prepare(UPDATE_CITY);
             $statement->execute(array(
                 'id' => (int) $id,
                 'name' => $input['name'],
@@ -82,7 +82,7 @@ class City extends BaseModel
     public function delete($id)
     {
         try {
-            $statement = $this->db->prepare(delete_city);
+            $statement = $this->db->prepare(DELETE_CITY);
             $statement->execute(array('id' => $id));
             $this->setResult($statement->rowCount());
         } catch (\PDOException $e) {

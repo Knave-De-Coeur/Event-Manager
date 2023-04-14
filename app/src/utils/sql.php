@@ -4,22 +4,22 @@ namespace src\utils\sql;
 
 // city queries
 
-define("select_all_cities", "SELECT * 
+define("SELECT_CITIES", "SELECT * 
                         FROM city;
                     ");
 
-define("select_city_by_id", "SELECT *
+define("SELECT_CITY_BY_ID", "SELECT *
                         FROM city 
                             WHERE id = :id;
                         ");
 
-define("insert_city", "INSERT INTO city 
+define("INSERT_CITY", "INSERT INTO city 
                 (name, population, size, capital)
             VALUES
                 (:name, :population, :size, :capital);
         ");
 
-define("update_city", "UPDATE city
+define("UPDATE_CITY", "UPDATE city
             SET 
                 name = :name,
                 population  = :population,
@@ -28,57 +28,57 @@ define("update_city", "UPDATE city
             WHERE id = :id;
         ");
 
-define("delete_city", "DELETE FROM city
+define("DELETE_CITY", "DELETE FROM city
             WHERE id = :id;
         ");
 
 
 // category queries
 
-define("select_all_categories", "
+define("SELECT_ALL_CATEGORIES", "
 SELECT c.id, c.name, c2.name as parent_name, c2.id as parent_id 
 FROM category as c 
 LEFT JOIN category c2 on c.parent_id = c2.id;
 ");
 
-define("select_category_by_id", "
+define("SELECT_CATEGORIES_BY_ID", "
 SELECT c.id, c.name, c2.name as parent_name, c2.id as parent_id
 FROM category as c
 LEFT JOIN category c2 on c.parent_id = c2.id
 WHERE c.id = :id;
 ");
 
-define("insert_category", "INSERT INTO category 
+define("INSERT_CATEGORY", "INSERT INTO category 
                 (name, parent_id)
             VALUES
                 (:name, :parent_id);
         ");
 
-define("update_category", "UPDATE category
+define("UPDATE_CATEGORY", "UPDATE category
             SET 
                 name = :name,
                 parent_id  = :parent_id
             WHERE id = :id;
         ");
 
-define("update_categories_no_parent", "UPDATE category
+define("UPDATE_CATEGORIES_WITH_NO_PARENT", "UPDATE category
             SET 
                 parent_id  = 0
             WHERE parent_id = :parent_id;
         ");
 
-define("delete_category", "DELETE FROM category
+define("DELETE_CATEGORY", "DELETE FROM category
             WHERE id = :id;
         ");
 
-define("delete_category_events_by_cat_id", "DELETE
+define("DELETE_CAT_EVENT_BY_CATEGORY_ID", "DELETE
                         FROM event_category 
                             WHERE category_id = :category_id;
                         ");
 
 // event queries
 
-define("select_all_events_with_cat", "
+define("SELECT_ALL_EVENTS", "
 SELECT
     e.id,
     e.name,
@@ -97,7 +97,7 @@ FROM event as e
 GROUP BY e.id;
 ");
 
-define("select_event_with_cat_by_id", "
+define("SELECT_EVENT_BY_ID", "
 SELECT
     e.id,
     e.name,
@@ -116,19 +116,19 @@ FROM event as e
 WHERE e.id = :event_id
 GROUP BY e.id;");
 
-define("insert_event", "INSERT INTO event 
+define("INSERT_EVENT", "INSERT INTO event 
                 (name, organizer, description, city_id, time_start, time_end)
             VALUES
                 (:name, :organizer, :description, :city_id, :time_start, :time_end);
         ");
 
-define("insert_event_category", "INSERT INTO event_category 
+define("INSERT_EVENT_CATEGORY", "INSERT INTO event_category 
                 (event_id, category_id)
             VALUES
                 (:event_id, :category_id);
         ");
 
-define("update_event", "UPDATE event
+define("UPDATE_EVENT", "UPDATE event
             SET 
                 name = :name,
                 organizer  = :organizer,
@@ -139,10 +139,10 @@ define("update_event", "UPDATE event
             WHERE id = :id;
         ");
 
-define("delete_event", "DELETE FROM event
+define("DELETE_EVENT", "DELETE FROM event
             WHERE id = :id;
         ");
 
-define("delete_event_categories", "DELETE FROM event_category
+define("DELETE_EVENT_CATEGORIES", "DELETE FROM event_category
             WHERE event_id = :event_id;
         ");
