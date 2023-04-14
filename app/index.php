@@ -73,7 +73,15 @@ if ($uri[1] == "city" || $uri[1] == "cities") {
     $category = new Category($db);
     $controller = new EventController($db, $requestMethod, $id, $city, $category);
 }else {
-    echo "TODO some message";
+    $controller = new EventController(null, null, null, null, null);
+    $response = new Response(
+        code: 404,
+        msg: "something went wrong",
+        body: new \stdClass(),
+        errorMsg: "page not found.",
+    );
+    $controller->processResponse($response);
+    exit(0);
 }
 
 try {

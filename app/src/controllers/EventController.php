@@ -13,11 +13,10 @@ class EventController extends BaseController
 {
     private Event|null $event;
 
-    public function __construct($db, $requestMethod, $id, $city, $event)
+    public function __construct($db, $requestMethod, $id, $city, $category)
     {
         parent::__construct($db, $requestMethod, $id);
-
-        $this->event = new Event($db, $city, $event);
+        $this->event = new Event($db, $city, $category);
     }
 
     public function getAll()
@@ -163,22 +162,22 @@ class EventController extends BaseController
 
     private function validateEvent($input)
     {
-        if (! isset($input['name'])) {
+        if (!isset($input['name'])) {
             return false;
         }
-        if (! isset($input['organizer'])) {
+        if (!isset($input['organizer'])) {
             return false;
         }
-        if (! isset($input['description'])) {
+        if (!isset($input['description'])) {
             return false;
         }
-        if (! isset($input['city_id'])) {
+        if (!isset($input['city_id']) || $input['city_id'] < 1) {
             return false;
         }
-        if (! isset($input['time_start'])) {
+        if (!isset($input['time_start'])) {
             return false;
         }
-        if (! isset($input['time_end'])) {
+        if (!isset($input['time_end'])) {
             return false;
         }
         return true;

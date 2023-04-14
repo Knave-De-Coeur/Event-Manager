@@ -42,7 +42,9 @@ class Event extends BaseModel
             $statement->execute(array('event_id' => $id));
             $event = $statement->fetch(\PDO::FETCH_ASSOC);
             if ($event) {
-                $event['category_ids'] = explode(",", $event['category_ids']);
+                if (isset($event['category_ids'])) {
+                    $event['category_ids'] = explode(",", $event['category_ids']);
+                }
                 $this->setResult((object)$event);
             }
         } catch (\PDOException $e) {

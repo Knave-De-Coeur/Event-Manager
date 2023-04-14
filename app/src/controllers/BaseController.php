@@ -9,8 +9,8 @@ use src\utils\Database as Database;
 
 abstract class BaseController
 {
-    protected Database $db;
-    private string $requestMethod;
+    protected Database|null $db;
+    private string|null $requestMethod;
 
     protected int|null $id;
 

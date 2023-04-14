@@ -6,9 +6,9 @@ use src\utils\Database as Database;
 
 abstract class BaseModel
 {
-    protected Database $db;
-    public $result;
-    public $error;
+    protected Database|null $db;
+    protected $result;
+    protected $error;
 
     public function __construct($db)
     {
