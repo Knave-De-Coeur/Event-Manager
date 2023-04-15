@@ -173,7 +173,7 @@ class Event extends BaseModel
         return array($this->getResult(), $this->getError());
     }
 
-    public function insertBulkEventCategories(array $cat_ids, int $event_id) : bool {
+    public function insertBulkEventCategories(array $cat_ids, $event_id) {
         $statement = $this->db->prepare(INSERT_EVENT_CATEGORY);
         foreach ($cat_ids as $cat_id) {
             $cat = $this->category->getById($cat_id);

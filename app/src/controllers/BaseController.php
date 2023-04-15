@@ -79,20 +79,20 @@ abstract class BaseController
     protected function badRequestResponse()
     {
         return new Response(
-            code: 400,
-            msg: "something went wrong.",
-            body: new \stdClass(),
-            errorMsg: "Invalid Input",
+            400,
+            "something went wrong.",
+            new \stdClass(),
+            "Invalid Input"
         );
     }
 
     protected function notFoundResponse()
     {
         return new Response(
-            code: 404,
-            msg: "something went wrong.",
-            body: new \stdClass(),
-            errorMsg: "Row doesn't exist.",
+            404,
+            "something went wrong.",
+            new \stdClass(),
+            "Row doesn't exist."
         );
     }
 

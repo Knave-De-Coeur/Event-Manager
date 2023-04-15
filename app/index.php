@@ -70,7 +70,7 @@ if ($uri[1] == "city" || $uri[1] == "cities") {
         404,
         "something went wrong",
         new \stdClass(),
-        "page not found.",
+        "page not found."
     );
     $controller->processResponse($response);
     exit(0);
