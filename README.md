@@ -2,15 +2,9 @@
 Php based event manager back end.
 
 ## Overview
-Build a basic event management app to track event venues in Malta. Before registering venues, the app will be used to populate and manage the list of cities and venue categories.
+A basic event management app to track event venues in Malta. 
+Before registering venues, the app will be used to populate and manage the list of cities and venue categories.
 
-### Back-end requirements;
-- PHP without any framework
-- MySQL or PostgreSQL for persistent storage
-- Redis for caching purposes
-
-### Front-end requirements;
-- Vue.js or AngularJS
 
 ### Description;
 - The user should be able to list, add, edit and delete cities and categories.
@@ -27,6 +21,9 @@ Build a basic event management app to track event venues in Malta. Before regist
 docker-compose up -d
 ```
 
+- Setup up nginx server
+- Sets up php-fpm and runs composer to manage dependencies
+- Sets up redis.
 - This should set-up the schema in a mysql with a bit of dummy data, the schema is the following:
 
 ### <u>Events table: </u>
