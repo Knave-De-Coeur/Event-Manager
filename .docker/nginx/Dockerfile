@@ -1,2 +1,2 @@
 FROM nginx:alpine
-ADD nginx/conf.d/default.conf /etc/nginx/conf.d
+ADD ./.docker/nginx/conf.d/default.conf /etc/nginx/conf.d

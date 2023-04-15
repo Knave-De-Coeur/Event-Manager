@@ -4,8 +4,8 @@ services:
   nginx:
     container_name: em-server
     build:
-      context: .docker
-      dockerfile: ./nginx/Dockerfile
+      context: .
+      dockerfile: ./.docker/nginx/Dockerfile
     ports:
       - "8080:80"
     networks:
@@ -16,13 +16,15 @@ services:
       - .docker/nginx/conf.d/default.conf:/etc/nginx/sites-enabled/default.conf
       - .docker/nginx/logs/error.log:/var/log/nginx/error.log
       - .docker/nginx/logs/access.log:/var/log/nginx/access.log
+    depends_on:
+      - php
 
 
   php:
     container_name: php-fpm
     build:
-      context: .docker
-      dockerfile: ./php/Dockerfile
+      context: .
+      dockerfile: ./.docker/php/Dockerfile
     networks:
       - internal
     ports:
@@ -33,6 +35,9 @@ services:
       - ./app/composer.json:/var/www/html/composer.json
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - mysql
+      - redis
 
   mysql:
     container_name: em-db
