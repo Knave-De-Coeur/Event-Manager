@@ -11,8 +11,8 @@ use src\models\Category as Category;
 
 class CategoryController extends BaseController
 {
-    private Category $category;
-    private const CAT_LIST_KEY = "category_l";
+    private $category;
+    const CAT_LIST_KEY = "category_l";
 
     public function __construct($db, $cache, $requestMethod, $id, $category)
     {
@@ -31,29 +31,29 @@ class CategoryController extends BaseController
         $res = $this->cache->get($this::CAT_LIST_KEY);
         if (!empty($res)) {
             return new Response(
-                code: 200,
-                msg: "Successfully got categories!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully got categories!",
+                $res,
+                null
             );
         }
 
         list($res, $err) = $this->category->getAll();
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong getting the categories",
-                body: new \stdClass,
-                errorMsg: $err->getMsg()
+                $err->getCode(),
+                "Something went wrong getting the categories",
+                new \stdClass,
+                $err->getMsg()
             );
 
         } else {
             $this->cache->set($this::CAT_LIST_KEY, $res);
             $response = new Response(
-                code: 200,
-                msg: "Successfully got categories!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully got categories!",
+                $res,
+                null
             );
         }
         return $response;
@@ -64,20 +64,20 @@ class CategoryController extends BaseController
         list($res, $err) = $this->category->getById($this->id);
         if ($res != null) {
             $response = new Response(
-                code: 200,
-                msg: "Successfully Grabbed Category!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully Grabbed Category!",
+                $res,
+                null
             );
         } else {
             if ($err != null && $err->getCode() == 404 || $err == null) {
                 return $this->notFoundResponse();
             }
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong getting the category",
-                body: new \stdClass,
-                errorMsg: $err->getMsg()
+                $err->getCode(),
+                "Something went wrong getting the category",
+                new \stdClass,
+                $err->getMsg()
             );
         }
         return $response;
@@ -93,17 +93,17 @@ class CategoryController extends BaseController
         if ($res != null) {
             $this->cache->del($this::CAT_LIST_KEY);
             $response = new Response(
-                code: 201,
-                msg: "Category Successfully Inserted!",
-                body: $res,
-                errorMsg: null,
+                201,
+                "Category Successfully Inserted!",
+                $res,
+                null
             );
         } else {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong inserting the category",
-                body: new \stdClass,
-                errorMsg: $err->getMsg()
+                $err->getCode(),
+                "Something went wrong inserting the category",
+                new \stdClass,
+                $err->getMsg()
             );
         }
         return $response;
@@ -124,17 +124,17 @@ class CategoryController extends BaseController
         if ($res != null) {
             $this->cache->del($this::CAT_LIST_KEY);
             $response = new Response(
-                code: 200,
-                msg: "Category Successfully Updated!",
-                body: new \stdClass,
-                errorMsg: null,
+                200,
+                "Category Successfully Updated!",
+                new \stdClass,
+                null
             );
         } else {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong updating the category",
-                body: new \stdClass,
-                errorMsg: $err->getMsg()
+                $err->getCode(),
+                "Something went wrong updating the category",
+                new \stdClass,
+                $err->getMsg()
             );
         }
         return $response;
@@ -150,25 +150,25 @@ class CategoryController extends BaseController
         if ($res) {
             $this->cache->del($this::CAT_LIST_KEY);
             $response = new Response(
-                code: 200,
-                msg: "Category Successfully Deleted!",
-                body: new \stdClass,
-                errorMsg: null,
+                200,
+                "Category Successfully Deleted!",
+                new \stdClass,
+                null
             );
         } else {
             if ($err != null) {
                 $response = new Response(
-                    code: $err->getCode(),
-                    msg: "Something went wrong deleting the category",
-                    body: new \stdClass,
-                    errorMsg: $err->getMsg(),
+                    $err->getCode(),
+                    "Something went wrong deleting the category",
+                    new \stdClass,
+                    $err->getMsg()
                 );
             } else {
                 $response = new Response(
-                    code: 404,
-                    msg: "Something went wrong",
-                    body: new \stdClass,
-                    errorMsg: "No Category was deleted.",
+                    404,
+                    "Something went wrong",
+                    new \stdClass,
+                    "No Category was deleted."
                 );
             }
         }

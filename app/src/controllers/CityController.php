@@ -10,9 +10,9 @@ use src\controllers\BaseController as BaseController;
 
 class CityController extends BaseController
 {
-    private City $city;
+    private $city;
 
-    private const CITY_LIST_KEY = "city_l";
+    const CITY_LIST_KEY = "city_l";
 
     public function __construct($db, $cache, $requestMethod, $id, $city)
     {
@@ -30,10 +30,10 @@ class CityController extends BaseController
         $res = $this->cache->get($this::CITY_LIST_KEY);
         if (!empty($res)) {
             return new Response(
-                code: 200,
-                msg: "Successfully got cities!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully got cities!",
+                $res,
+                null
             );
         }
 
@@ -41,18 +41,18 @@ class CityController extends BaseController
 
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong getting the cities.",
-                body: new \stdClass,
-                errorMsg: $err->getMessage()
+                $err->getCode(),
+                "Something went wrong getting the cities.",
+                new \stdClass,
+                $err->getMessage()
             );
         } else {
             $this->cache->set($this::CITY_LIST_KEY, $res);
             $response = new Response(
-                code: 200,
-                msg: "Successfully got cities!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully got cities!",
+                $res,
+                null
             );
         }
 
@@ -65,19 +65,19 @@ class CityController extends BaseController
 
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong getting the City",
-                body: new \stdClass,
-                errorMsg: $err->getMessage()
+                $err->getCode(),
+                "Something went wrong getting the City",
+                new \stdClass,
+                $err->getMessage()
             );
         } else if (!$res) {
             return $this->notFoundResponse();
         } else {
             $response = new Response(
-                code: 200,
-                msg: "Successfully Grabbed City!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully Grabbed City!",
+                $res,
+                null
             );
         }
         return $response;
@@ -94,18 +94,18 @@ class CityController extends BaseController
 
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong inserting the City",
-                body: new \stdClass,
-                errorMsg: $err->getMessage()
+                $err->getCode(),
+                "Something went wrong inserting the City",
+                new \stdClass,
+                $err->getMessage()
             );
         } else {
             $this->cache->del($this::CITY_LIST_KEY);
             $response = new Response(
-                code: 201,
-                msg: "Category Successfully Inserted!",
-                body: $res,
-                errorMsg: null,
+                201,
+                "Category Successfully Inserted!",
+                $res,
+                null
             );
         }
         return $response;
@@ -124,25 +124,25 @@ class CityController extends BaseController
         list($res, $err) = $this->city->update($this->id, $input);
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong updating the city",
-                body: new \stdClass,
-                errorMsg: $err->getMessage()
+                $err->getCode(),
+                "Something went wrong updating the city",
+                new \stdClass,
+                $err->getMessage()
             );
         } else if (!$res) {
             $response = new Response(
-                code: 404,
-                msg: "No City was updated!",
-                body: new \stdClass,
-                errorMsg: null,
+                404,
+                "No City was updated!",
+                new \stdClass,
+                null
             );
         } else {
             $this->cache->del($this::CITY_LIST_KEY);
             $response = new Response(
-                code: 200,
-                msg: "City Successfully Updated!",
-                body: new \stdClass,
-                errorMsg: null,
+                200,
+                "City Successfully Updated!",
+                new \stdClass,
+                null
             );
         }
         return $response;
@@ -157,25 +157,25 @@ class CityController extends BaseController
         list($res, $err) = $this->city->delete($this->id);
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong deleting the city",
-                body: new \stdClass,
-                errorMsg: $err->getMessage(),
+                $err->getCode(),
+                "Something went wrong deleting the city",
+                new \stdClass,
+                $err->getMessage()
             );
         } else if (!$res) {
             $response = new Response(
-                code: 404,
-                msg: "Something went wrong",
-                body: new \stdClass,
-                errorMsg: "No City was deleted.",
+                404,
+                "Something went wrong",
+                new \stdClass,
+                "No City was deleted."
             );
         } else {
             $this->cache->del($this::CITY_LIST_KEY);
             $response = new Response(
-                code: 200,
-                msg: "City Successfully Deleted!",
-                body: new \stdClass,
-                errorMsg: null,
+                200,
+                "City Successfully Deleted!",
+                new \stdClass,
+                null
             );
         }
         return $response;

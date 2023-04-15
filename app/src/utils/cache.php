@@ -3,11 +3,10 @@
 namespace src\utils;
 
 use Predis;
-use src\models\BaseModel;
 
 class Cache
 {
-    private Predis\Client $redisConn;
+    private $redisConn;
 
     public function __construct()
     {

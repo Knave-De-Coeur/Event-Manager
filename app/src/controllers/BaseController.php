@@ -6,17 +6,15 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/src/models/response.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/cache.php';
 
 use src\models\Response as Response;
-use src\utils\Database as Database;
-use src\utils\Cache as Cache;
 
 abstract class BaseController
 {
-    protected Database|null $db;
+    protected $db;
 
-    public Cache $cache;
-    private string|null $requestMethod;
+    public $cache;
+    private $requestMethod;
 
-    protected int|null $id;
+    protected $id;
 
     public function __construct($db, $cache, $requestMethod, $id) {
         $this->db = $db;

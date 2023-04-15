@@ -4,10 +4,10 @@ namespace src\models;
 
 class Response {
 
-    private string $code;
-    private string $msg;
-    private null|string $errorMsg;
-    private object|array $body;
+    private $code;
+    private $msg;
+    private $errorMsg;
+    private $body;
     public function __construct($code, $msg, $body, $errorMsg){
         $this->code = $code;
         $this->msg = $msg;

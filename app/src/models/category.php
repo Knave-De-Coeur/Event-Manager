@@ -26,7 +26,7 @@ class Category extends BaseModel
         return array($this->getResult(), $this->getError());
     }
 
-    public function getById(int $id)
+    public function getById($id)
     {
         try {
             $statement = $this->db->prepare(SELECT_CATEGORIES_BY_ID);

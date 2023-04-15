@@ -9,14 +9,14 @@ require_once __DIR__ . '/src/utils/cache.php';
 require 'vendor/autoload.php';
 
 use Dotenv\Dotenv;
+use src\utils\Cache as cache;
+use src\utils\database as db;
+use src\models\City as City;
+use src\models\Category as Category;
 use src\controllers\CategoryController as CategoryController;
 use src\controllers\CityController as CityController;
 use src\controllers\EventController as EventController;
 use src\models\Response as Response;
-use src\utils\database as db;
-use src\models\City as City;
-use src\models\Category as Category;
-use src\utils\Cache as cache;
 
 header("Content-Type: application/json; charset=UTF-8");
 if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -27,7 +27,6 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Max-Age: 3600');
-
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
@@ -44,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-$db = (new db());
+$db = new db();
 $cache = new Cache();
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -68,10 +67,10 @@ if ($uri[1] == "city" || $uri[1] == "cities") {
 }else {
     $controller = new EventController(null, null, null, null, null, null);
     $response = new Response(
-        code: 404,
-        msg: "something went wrong",
-        body: new \stdClass(),
-        errorMsg: "page not found.",
+        404,
+        "something went wrong",
+        new \stdClass(),
+        "page not found.",
     );
     $controller->processResponse($response);
     exit(0);
@@ -81,10 +80,10 @@ try {
     $controller->processRequest();
 } catch(\Exception $e) {
     $response = new Response(
-        code: 500,
-        msg: "something went wrong",
-        body: $e->getMessage(),
-        errorMsg: null,
+        500,
+        "something went wrong",
+        $e->getMessage(),
+        null
     );
     $controller->processResponse($response);
 }

@@ -2,11 +2,9 @@
 
 namespace src\models;
 
-use src\utils\Database as Database;
-
 abstract class BaseModel
 {
-    protected Database|null $db;
+    protected $db;
     protected $result;
     protected $error;
 
@@ -18,17 +16,17 @@ abstract class BaseModel
     }
 
     abstract public function getAll();
-    abstract public function getById(int $id);
+    abstract public function getById($id);
     abstract public function insert(Array $input);
-    abstract public function update(int $id, Array $input);
-    abstract public function delete(int $id);
+    abstract public function update($id, Array $input);
+    abstract public function delete($id);
 
     public function getResult()
     {
         return $this->result;
     }
 
-    public function setResult($result): void
+    public function setResult($result)
     {
         $this->result = $result;
     }
@@ -38,7 +36,7 @@ abstract class BaseModel
         return $this->error;
     }
 
-    public function setError($error): void
+    public function setError($error)
     {
         $this->error = $error;
     }

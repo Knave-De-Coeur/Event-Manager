@@ -8,8 +8,8 @@ use src\models\Category as Category;
 
 class Event extends BaseModel
 {
-    private City|null $city;
-    private Category|null $category;
+    private $city;
+    private $category;
     public function __construct($db, $city, $category)
     {
         parent::__construct($db);
@@ -35,7 +35,7 @@ class Event extends BaseModel
         return array($this->getResult(), $this->getError());
     }
 
-    public function getById(int $id)
+    public function getById($id)
     {
         try {
             $statement = $this->db->prepare(SELECT_EVENT_BY_ID);
@@ -98,7 +98,7 @@ class Event extends BaseModel
         return array($this->getResult(), $this->getError());
     }
 
-    public function update(int $id, array $input)
+    public function update($id, array $input)
     {
         try {
             $this->db->beginTransaction();
@@ -144,7 +144,7 @@ class Event extends BaseModel
         return array($this->getResult(), $this->getError());
     }
 
-    public function delete(int $id)
+    public function delete($id)
     {
         try {
             $this->db->beginTransaction();
