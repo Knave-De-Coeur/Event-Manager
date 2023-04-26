@@ -17,8 +17,10 @@ class Database extends PDO
         $user = $_ENV['DB_USERNAME'];
         $pass = $_ENV['DB_PASSWORD'];
 
+        $dsn = "mysql:host=$host;port=$port;charset=utf8mb4;dbname=$db";
+
         try {
-            parent::__construct("mysql:host=$host;port=$port;charset=utf8mb4;dbname=$db", $user, $pass);
+            parent::__construct($dsn, $user, $pass);
 
         } catch (PDOException $e) {
             exit("something went wrong getting connection: " . $e->getMessage());
