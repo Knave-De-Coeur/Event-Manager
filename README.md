@@ -16,7 +16,8 @@ Before registering venues, the app will be used to populate and manage the list 
 
 ## Instructions
 
-- clone repo, step into the directory and run following command (free up ports accordingly):
+- Make sure there is a .env files and it is populated with configs similar to the .en.example. 
+- Run following command (free up ports accordingly):
 ```
 docker-compose up -d
 ```

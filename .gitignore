@@ -1,5 +1,5 @@
 composer.phar
 /vendor/
 .env
-.docker/nginx/logs/*
+.docker/nginx/logs/
 composer.lock
