@@ -1,20 +1,16 @@
 <?php
 
-namespace src\controllers;
+namespace Src\Controllers;
 
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/event.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
-
-use src\controllers\BaseController as BaseController;
-use src\models\Event as Event;
-use src\models\Response;
+use Src\Controllers\BaseController as BaseController;
+use Src\Models\Event as Event;
+use Src\Models\Response;
 
 class EventController extends BaseController
 {
-    private Event|null $event;
+    private $event;
 
-    private const EVENT_LIST_KEY = "event_l";
-
+    const EVENT_LIST_KEY = "event_l";
 
     public function __construct($db, $cache, $requestMethod, $id, $city, $category)
     {
@@ -67,7 +63,7 @@ class EventController extends BaseController
                 body: new \stdClass,
                 errorMsg: $err->getMessage()
             );
-        } else if (!$res) {
+        } elseif (!$res) {
             return $this->notFoundResponse();
         } else {
             $response = new Response(
@@ -158,7 +154,7 @@ class EventController extends BaseController
                 body: new \stdClass,
                 errorMsg: $err->getMessage(),
             );
-        } else if (!$res) {
+        } elseif (!$res) {
             $response = new Response(
                 code: 404,
                 msg: "Something went wrong",

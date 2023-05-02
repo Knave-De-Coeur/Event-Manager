@@ -2,5 +2,4 @@ composer.phar
 /vendor/
 .env
 *.log
-/composer.lock
 .idea

@@ -1,6 +1,6 @@
 <?php
 
-namespace src\utils\sql;
+namespace Src\Utils\sql;
 
 // city queries
 

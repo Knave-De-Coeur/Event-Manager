@@ -1,10 +1,12 @@
 <?php
 
-namespace src\models;
+namespace Src\Models;
 
-use src\models\BaseModel as BaseModel;
-use src\models\City as City;
-use src\models\Category as Category;
+require_once $_SERVER['DOCUMENT_ROOT'] .'/Src/Utils/sql.php';
+
+use PDO;
+use PDOException;
+use Src\Models\BaseModel as BaseModel;
 
 class Event extends BaseModel
 {
@@ -21,14 +23,14 @@ class Event extends BaseModel
     {
         try {
             $statement = $this->db->query(SELECT_ALL_EVENTS);
-            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $event) {
                 if (isset($event['category_ids'])) {
                     $event['category_ids'] = explode(",", $event['category_ids']);
                 }
             }
             $this->setResult($result);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 
@@ -40,14 +42,14 @@ class Event extends BaseModel
         try {
             $statement = $this->db->prepare(SELECT_EVENT_BY_ID);
             $statement->execute(array('event_id' => $id));
-            $event = $statement->fetch(\PDO::FETCH_ASSOC);
+            $event = $statement->fetch(PDO::FETCH_ASSOC);
             if ($event) {
                 if (isset($event['category_ids'])) {
                     $event['category_ids'] = explode(",", $event['category_ids']);
                 }
                 $this->setResult((object)$event);
             }
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 
@@ -63,7 +65,7 @@ class Event extends BaseModel
 
             if ($city == null) {
                 $this->db->Rollback();
-                throw new \PDOException("city does not exist");
+                throw new PDOException("city does not exist");
             }
 
             $statement = $this->db->prepare(INSERT_EVENT);
@@ -82,7 +84,7 @@ class Event extends BaseModel
             if (count($event['category_ids']) >= 1) {
                 if (!$this->insertBulkEventCategories($event['category_ids'], $event_id)) {
                     $this->db->rollback();
-                    throw new \PDOException("category doesn't exist");
+                    throw new PDOException("category doesn't exist");
                 }
             }
 
@@ -91,7 +93,7 @@ class Event extends BaseModel
             $event['id'] = $event_id;
 
             $this->setResult($event);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 
@@ -107,7 +109,7 @@ class Event extends BaseModel
 
             if ($city == null) {
                 $this->db->Rollback();
-                throw new \PDOException("city does not exist");
+                throw new PDOException("city does not exist");
             }
 
             $statement = $this->db->prepare(UPDATE_EVENT);
@@ -130,14 +132,14 @@ class Event extends BaseModel
 
                 if (!$this->insertBulkEventCategories($input['category_ids'], $id)) {
                     $this->db->rollback();
-                    throw new \PDOException("category doesn't exist");
+                    throw new PDOException("category doesn't exist");
                 }
             }
 
             $this->db->Commit();
 
             $this->setResult($statement->rowCount());
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 
@@ -152,7 +154,7 @@ class Event extends BaseModel
             $statement = $this->db->prepare(SELECT_EVENT_BY_ID);
             $statement->execute(array('event_id' => $id));
 
-            $event = $statement->fetch(\PDO::FETCH_ASSOC);
+            $event = $statement->fetch(PDO::FETCH_ASSOC);
             $event['category_ids'] = str_split($event['category_ids']);
 
             if (count($event['category_ids']) >= 1) {
@@ -166,7 +168,7 @@ class Event extends BaseModel
             $this->db->commit();
 
             $this->setResult($statement->rowCount());
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 

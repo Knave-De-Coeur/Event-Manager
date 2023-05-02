@@ -1,22 +1,19 @@
 <?php
 namespace app;
 
-require_once __DIR__. '/src/utils/database.php';
-require_once __DIR__. '/src/controllers/CityController.php';
-require_once __DIR__. '/src/controllers/CategoryController.php';
-require_once __DIR__. '/src/controllers/EventController.php';
-require_once __DIR__ . '/src/utils/cache.php';
 require 'vendor/autoload.php';
 
 use Dotenv\Dotenv;
-use src\utils\Cache as cache;
-use src\utils\database as db;
-use src\models\City as City;
-use src\models\Category as Category;
-use src\controllers\CategoryController as CategoryController;
-use src\controllers\CityController as CityController;
-use src\controllers\EventController as EventController;
-use src\models\Response as Response;
+use Exception;
+use Src\Utils\Cache as cache;
+use Src\Utils\Database as db;
+use Src\Models\City as City;
+use Src\Models\Category as Category;
+use Src\controllers\CategoryController as CategoryController;
+use Src\controllers\CityController as CityController;
+use Src\controllers\EventController as EventController;
+use Src\Models\Response as Response;
+use stdClass;
 
 header("Content-Type: application/json; charset=UTF-8");
 if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -58,18 +55,18 @@ if (isset($uri[2])) {
 
 if ($uri[1] == "city" || $uri[1] == "cities") {
     $controller = new CityController($db, $cache, $requestMethod, $id, null);
-} else if ($uri[1] == "category" || $uri[1] == "categories")   {
+} elseif ($uri[1] == "category" || $uri[1] == "categories")   {
     $controller = new CategoryController($db, $cache, $requestMethod, $id, null);
-} else if ($uri[1] == "event" || $uri[1] == "events") {
+} elseif ($uri[1] == "event" || $uri[1] == "events") {
     $city = new City($db);
     $category = new Category($db);
     $controller = new EventController($db, $cache, $requestMethod, $id, $city, $category);
-}else {
+} else {
     $controller = new EventController(null, null, null, null, null, null);
     $response = new Response(
         404,
         "something went wrong",
-        new \stdClass(),
+        new stdClass(),
         "page not found."
     );
     $controller->processResponse($response);
@@ -78,7 +75,7 @@ if ($uri[1] == "city" || $uri[1] == "cities") {
 
 try {
     $controller->processRequest();
-} catch(\Exception $e) {
+} catch(Exception $e) {
     $response = new Response(
         500,
         "something went wrong",

@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
-namespace src\controllers\CityController;
+namespace Src\Controllers;
 
 use PHPUnit\Framework\TestCase;
 
 class Test extends TestCase
 {
-    public function testMyTest(): void
+    public function testMyTest()
     {
         $this->assertTrue(true);
     }

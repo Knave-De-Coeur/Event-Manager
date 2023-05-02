@@ -1,11 +1,12 @@
 <?php
 
-namespace src\models;
+namespace Src\Models;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/BaseModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .'/Src/Utils/sql.php';
 
-use src\models\BaseModel as BaseModel;
+use PDO;
+use PDOException;
+use Src\Models\BaseModel as BaseModel;
 
 class City extends BaseModel
 {
@@ -18,8 +19,8 @@ class City extends BaseModel
     {
         try {
             $statement = $this->db->query(SELECT_CITIES);
-            $this->setResult($statement->fetchAll(\PDO::FETCH_ASSOC));
-        } catch (\PDOException $e) {
+            $this->setResult($statement->fetchAll(PDO::FETCH_ASSOC));
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 
@@ -31,11 +32,11 @@ class City extends BaseModel
         try {
             $statement = $this->db->prepare(SELECT_CITY_BY_ID);
             $statement->execute(array('id' => $id));
-            $res = $statement->fetch(\PDO::FETCH_ASSOC);
+            $res = $statement->fetch(PDO::FETCH_ASSOC);
             if ($res) {
                 $this->setResult((object)$res);
             }
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 
@@ -54,7 +55,7 @@ class City extends BaseModel
             ));
             $city['id'] = $this->db->lastInsertID();
             $this->setResult($city);;
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 
@@ -73,7 +74,7 @@ class City extends BaseModel
                 'capital' => (int) $input['capital'],
             ));
             $this->setResult($statement->rowCount());
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
         return array($this->getResult(), $this->getError());
@@ -85,7 +86,7 @@ class City extends BaseModel
             $statement = $this->db->prepare(DELETE_CITY);
             $statement->execute(array('id' => $id));
             $this->setResult($statement->rowCount());
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->setError($e);
         }
 

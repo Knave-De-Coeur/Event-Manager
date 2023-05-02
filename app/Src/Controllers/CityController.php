@@ -1,12 +1,10 @@
 <?php
-namespace src\controllers;
+namespace Src\Controllers;
 
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/city.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
-
-use src\models\City as City;
-use src\models\Response;
-use src\controllers\BaseController as BaseController;
+use Src\Models\City as City;
+use Src\Models\Response;
+use Src\controllers\BaseController as BaseController;
+use stdClass;
 
 class CityController extends BaseController
 {
@@ -43,7 +41,7 @@ class CityController extends BaseController
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong getting the cities.",
-                new \stdClass,
+                new stdClass(),
                 $err->getMessage()
             );
         } else {
@@ -67,10 +65,10 @@ class CityController extends BaseController
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong getting the City",
-                new \stdClass,
+                new stdClass(),
                 $err->getMessage()
             );
-        } else if (!$res) {
+        } elseif (!$res) {
             return $this->notFoundResponse();
         } else {
             $response = new Response(
@@ -96,7 +94,7 @@ class CityController extends BaseController
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong inserting the City",
-                new \stdClass,
+                new stdClass(),
                 $err->getMessage()
             );
         } else {
@@ -126,14 +124,14 @@ class CityController extends BaseController
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong updating the city",
-                new \stdClass,
+                new stdClass(),
                 $err->getMessage()
             );
-        } else if (!$res) {
+        } elseif (!$res) {
             $response = new Response(
                 404,
                 "No City was updated!",
-                new \stdClass,
+                new stdClass(),
                 null
             );
         } else {
@@ -141,7 +139,7 @@ class CityController extends BaseController
             $response = new Response(
                 200,
                 "City Successfully Updated!",
-                new \stdClass,
+                new stdClass(),
                 null
             );
         }
@@ -159,14 +157,14 @@ class CityController extends BaseController
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong deleting the city",
-                new \stdClass,
+                new stdClass(),
                 $err->getMessage()
             );
-        } else if (!$res) {
+        } elseif (!$res) {
             $response = new Response(
                 404,
                 "Something went wrong",
-                new \stdClass,
+                new stdClass(),
                 "No City was deleted."
             );
         } else {
@@ -174,7 +172,7 @@ class CityController extends BaseController
             $response = new Response(
                 200,
                 "City Successfully Deleted!",
-                new \stdClass,
+                new stdClass(),
                 null
             );
         }

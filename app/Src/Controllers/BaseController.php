@@ -1,11 +1,9 @@
 <?php
 
-namespace src\controllers;
+namespace Src\Controllers;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/models/response.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/cache.php';
-
-use src\models\Response as Response;
+use Src\Models\Response as Response;
+use stdClass;
 
 abstract class BaseController
 {
@@ -81,7 +79,7 @@ abstract class BaseController
         return new Response(
             400,
             "something went wrong.",
-            new \stdClass(),
+            new stdClass(),
             "Invalid Input"
         );
     }
@@ -91,7 +89,7 @@ abstract class BaseController
         return new Response(
             404,
             "something went wrong.",
-            new \stdClass(),
+            new stdClass(),
             "Row doesn't exist."
         );
     }

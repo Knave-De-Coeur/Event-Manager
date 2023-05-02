@@ -1,13 +1,11 @@
 <?php
 
-namespace src\controllers;
+namespace Src\Controllers;
 
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/models/category.php';
-require_once $_SERVER['DOCUMENT_ROOT'] .'/src/controllers/BaseController.php';
-
-use src\controllers\BaseController as BaseController;
-use src\models\Response as Response;
-use src\models\Category as Category;
+use Src\Controllers\BaseController as BaseController;
+use Src\Models\Response as Response;
+use Src\Models\Category as Category;
+use stdClass;
 
 class CategoryController extends BaseController
 {
@@ -43,7 +41,7 @@ class CategoryController extends BaseController
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong getting the categories",
-                new \stdClass,
+                new stdClass(),
                 $err->getMsg()
             );
 
@@ -76,7 +74,7 @@ class CategoryController extends BaseController
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong getting the category",
-                new \stdClass,
+                new stdClass(),
                 $err->getMsg()
             );
         }
@@ -102,7 +100,7 @@ class CategoryController extends BaseController
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong inserting the category",
-                new \stdClass,
+                new stdClass(),
                 $err->getMsg()
             );
         }
@@ -126,14 +124,14 @@ class CategoryController extends BaseController
             $response = new Response(
                 200,
                 "Category Successfully Updated!",
-                new \stdClass,
+                new stdClass(),
                 null
             );
         } else {
             $response = new Response(
                 $err->getCode(),
                 "Something went wrong updating the category",
-                new \stdClass,
+                new stdClass(),
                 $err->getMsg()
             );
         }
@@ -152,25 +150,23 @@ class CategoryController extends BaseController
             $response = new Response(
                 200,
                 "Category Successfully Deleted!",
-                new \stdClass,
+                new stdClass(),
                 null
             );
+        } elseif ($err != null) {
+            $response = new Response(
+                $err->getCode(),
+                "Something went wrong deleting the category",
+                new stdClass(),
+                $err->getMsg()
+            );
         } else {
-            if ($err != null) {
-                $response = new Response(
-                    $err->getCode(),
-                    "Something went wrong deleting the category",
-                    new \stdClass,
-                    $err->getMsg()
-                );
-            } else {
-                $response = new Response(
-                    404,
-                    "Something went wrong",
-                    new \stdClass,
-                    "No Category was deleted."
-                );
-            }
+            $response = new Response(
+                404,
+                "Something went wrong",
+                new stdClass(),
+                "No Category was deleted."
+            );
         }
         return $response;
     }
