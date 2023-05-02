@@ -109,7 +109,7 @@ class Event extends BaseModel
 
             if ($city == null) {
                 $this->db->Rollback();
-                throw new PDOException("city does not exist");
+                throw new PDOException("city does not exist", 404);
             }
 
             $statement = $this->db->prepare(UPDATE_EVENT);
@@ -155,12 +155,18 @@ class Event extends BaseModel
             $statement->execute(array('event_id' => $id));
 
             $event = $statement->fetch(PDO::FETCH_ASSOC);
-            $event['category_ids'] = str_split($event['category_ids']);
-
-            if (count($event['category_ids']) >= 1) {
-                $statement = $this->db->prepare(DELETE_EVENT_CATEGORIES);
-                $statement->execute(array('event_id' => $id));
+            if (!$event) {
+                throw new PDOException('event not found', 404);
             }
+
+            if (!is_null($event['category_ids'])) {
+                $event['category_ids'] = str_split($event['category_ids']);
+                if (count($event['category_ids']) >= 1) {
+                    $statement = $this->db->prepare(DELETE_EVENT_CATEGORIES);
+                    $statement->execute(array('event_id' => $id));
+                }
+            }
+
 
             $statement = $this->db->prepare(DELETE_EVENT);
             $statement->execute(array('id' => $id));

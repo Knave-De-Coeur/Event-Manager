@@ -24,7 +24,7 @@ services:
     container_name: php-fpm
     build:
       context: .
-      dockerfile: ./.docker/php/Dockerfile
+      dockerfile: .docker/php-8/Dockerfile
     networks:
       - internal
     ports:
@@ -32,7 +32,7 @@ services:
     volumes:
       - ./app:/var/www/html
       - .docker/php/logs/php.log:/var/log/fpm-php.www.log
-      - ./app/composer.json:/var/www/html/composer.json
+      - ./app/composer.*:/var/www/html/composer.*
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
