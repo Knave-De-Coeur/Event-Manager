@@ -57,7 +57,7 @@ services:
       MYSQL_PASSWORD: alexsecret
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     networks:
-      internal:
+      - internal
 
   redis:
     container_name: em-cache
@@ -65,9 +65,9 @@ services:
     ports:
       - "6379:6379"
     volumes:
-    - events-data:/data
+      - events-data:/data
     networks:
-    - internal
+      - internal
 
 
 networks:

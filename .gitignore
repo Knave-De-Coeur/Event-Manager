@@ -3,3 +3,4 @@ composer.phar
 .env
 *.log
 /composer.lock
+.idea

@@ -21,7 +21,6 @@ class Database extends PDO
 
         try {
             parent::__construct($dsn, $user, $pass);
-
         } catch (PDOException $e) {
             exit("something went wrong getting connection: " . $e->getMessage());
         }
