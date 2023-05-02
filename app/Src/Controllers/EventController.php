@@ -5,6 +5,7 @@ namespace Src\Controllers;
 use Src\Controllers\BaseController as BaseController;
 use Src\Models\Event as Event;
 use Src\Models\Response;
+use stdClass;
 
 class EventController extends BaseController
 {
@@ -23,10 +24,10 @@ class EventController extends BaseController
         $res = $this->cache->get($this::EVENT_LIST_KEY);
         if (!empty($res)) {
             return new Response(
-                code: 200,
-                msg: "Successfully got events!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully got events!",
+                $res,
+                null
             );
         }
 
@@ -34,18 +35,18 @@ class EventController extends BaseController
 
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong getting the events.",
-                body: new \stdClass,
-                errorMsg: $err->getMessage()
+                $err->getCode(),
+                "Something went wrong getting the events.",
+                new stdClass(),
+                $err->getMessage()
             );
         } else {
             $this->cache->set($this::EVENT_LIST_KEY, $res);
             $response = new Response(
-                code: 200,
-                msg: "Successfully got events!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully got events!",
+                $res,
+                null
             );
         }
 
@@ -58,19 +59,19 @@ class EventController extends BaseController
 
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong getting the Event",
-                body: new \stdClass,
-                errorMsg: $err->getMessage()
+                $err->getCode(),
+               "Something went wrong getting the Event",
+                new stdClass(),
+                $err->getMessage()
             );
         } elseif (!$res) {
             return $this->notFoundResponse();
         } else {
             $response = new Response(
-                code: 200,
-                msg: "Successfully Grabbed the Event!",
-                body: $res,
-                errorMsg: null,
+                200,
+                "Successfully Grabbed the Event!",
+                $res,
+                null
             );
         }
         return $response;
@@ -86,18 +87,18 @@ class EventController extends BaseController
 
         if ($err != null) {
             $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong inserting the Event",
-                body: new \stdClass,
-                errorMsg: $err->getMessage()
+                $err->getCode(),
+                "Something went wrong inserting the Event",
+                new stdClass(),
+                $err->getMessage()
             );
         } else {
             $this->cache->del($this::EVENT_LIST_KEY);
             $response = new Response(
-                code: 201,
-                msg: "Event Successfully Inserted!",
-                body: $res,
-                errorMsg: null,
+                201,
+                "Event Successfully Inserted!",
+                $res,
+                null
             );
         }
         return $response;
@@ -115,28 +116,31 @@ class EventController extends BaseController
         }
         list($res, $err) = $this->event->update($this->id, $input);
         if ($err != null) {
-            $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong updating the event",
-                body: new \stdClass,
-                errorMsg: $err->getMessage()
-            );
-        } else if (!$res) {
-            $response = new Response(
-                code: 404,
-                msg: "No Event was updated!",
-                body: new \stdClass,
-                errorMsg: null,
-            );
-        } else {
-            $this->cache->del($this::EVENT_LIST_KEY);
-            $response = new Response(
-                code: 200,
-                msg: "Event Successfully Updated!",
-                body: new \stdClass,
-                errorMsg: null,
+            return new Response(
+                $err->getCode(),
+                "Something went wrong updating the event",
+                new stdClass(),
+                $err->getMessage()
             );
         }
+
+        if (!is_null($res)) {
+            $this->cache->del($this::EVENT_LIST_KEY);
+            $response = new Response(
+                200,
+                "Event Successfully Updated!",
+                new stdClass(),
+                null
+            );
+        } else {
+            $response = new Response(
+                500,
+                "Event Update Error",
+                new stdClass(),
+                "Internal Error"
+            );
+        }
+
         return $response;
     }
 
@@ -147,27 +151,29 @@ class EventController extends BaseController
             return $this->notFoundResponse();
         }
         list($res, $err) = $this->event->delete($this->id);
-        if ($err != null) {
-            $response = new Response(
-                code: $err->getCode(),
-                msg: "Something went wrong deleting the Event",
-                body: new \stdClass,
-                errorMsg: $err->getMessage(),
+        if (!is_null($err)) {
+            return new Response(
+                $err->getCode(),
+                "Something went wrong deleting the Event",
+                new stdClass(),
+                $err->getMessage()
             );
-        } elseif (!$res) {
-            $response = new Response(
-                code: 404,
-                msg: "Something went wrong",
-                body: new \stdClass,
-                errorMsg: "No Event was deleted.",
-            );
-        } else {
+        }
+
+        if (!is_null($res)) {
             $this->cache->del($this::EVENT_LIST_KEY);
             $response = new Response(
-                code: 200,
-                msg: "Event Successfully Deleted!",
-                body: new \stdClass,
-                errorMsg: null,
+                200,
+                "Event Successfully Deleted!",
+                new stdClass(),
+                null
+            );
+        } else {
+            $response = new Response(
+                500,
+                "Something went wrong",
+                new stdClass(),
+                "Internal Error."
             );
         }
         return $response;
