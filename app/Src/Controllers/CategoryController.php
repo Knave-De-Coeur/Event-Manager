@@ -119,22 +119,41 @@ class CategoryController extends BaseController
             return $this->badRequestResponse();
         }
         list($res, $err) = $this->category->update($this->id, $input);
-        if ($res != null) {
-            $this->cache->del($this::CAT_LIST_KEY);
-            $response = new Response(
-                200,
-                "Category Successfully Updated!",
-                new stdClass(),
-                null
-            );
-        } else {
-            $response = new Response(
+        if (!is_null($err)) {
+            return new Response(
                 $err->getCode(),
                 "Something went wrong updating the category",
                 new stdClass(),
                 $err->getMsg()
             );
         }
+
+        if (!is_null($res)) {
+            if ($res > 0) {
+                $this->cache->del($this::CAT_LIST_KEY);
+                $response = new Response(
+                    200,
+                    "Category Successfully Updated!",
+                    new stdClass(),
+                    null
+                );
+            } else {
+                $response = new Response(
+                    404,
+                    "Something went wrong updating the category",
+                    new stdClass(),
+                    "row not updated"
+                );
+            }
+        } else {
+            $response = new Response(
+                500,
+                "Something went wrong updating the category",
+                new stdClass(),
+                "internal error"
+            );
+        }
+
         return $response;
     }
 
